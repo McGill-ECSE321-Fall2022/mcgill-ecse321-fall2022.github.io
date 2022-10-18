@@ -453,6 +453,22 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
+<li><a href="#truebackend">2. Backend</a>
+<ul class="sectlevel2">
+<li><a href="#truethe-domain-mode">2.1. The Domain Mode</a></li>
+<li><a href="#truesetting-up-a-spring-based-backend">2.2. Setting up a Spring-based Backend</a>
+<ul class="sectlevel3">
+<li><a href="#truerunning-the-backend-application-from-eclipse">2.2.1. Running the Backend Application from Eclipse</a></li>
+<li><a href="#truespring-transactions">2.2.2. Spring Transactions</a></li>
+</ul>
+</li>
+<li><a href="#truecrud-repositories">2.3. CRUD Repositories</a>
+<ul class="sectlevel3">
+<li><a href="#truecreating-a-crud-repository">2.3.1. Creating a CRUD Repository</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -537,7 +553,7 @@ Script
 Binary
 </td>
 <td class="hdlist2">
-<p>Classes that implement the pugin interface and programmatic in manipulating the build.</p>
+<p>Classes that implement the plugin interface and programmatic in manipulating the build.</p>
 <div class="paragraph">
 <p>More information on plugins can be found <a href="https://docs.gradle.org/current/userguide/plugins.html">here</a>.</p>
 </div>
@@ -655,7 +671,15 @@ sourceSets {
 <p>One of the core components of Agile development is being able to manage the development problem space. GitHub projects extends GitHub&#8217;s utility to make problem space management easy.</p>
 </div>
 <div class="paragraph">
-<p>Any repository can be added to a project by selecting the <em>Create New Project</em> button located in the <em>Project</em> tab of the repository.</p>
+<p>To create a project, click your user icon and select <em>Your projects</em> from the dropdown menu.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="figs/GitProj4.png" alt="GitProj4">
+</div>
+</div>
+<div class="paragraph">
+<p>Select the <em>New Project</em> button to create a project. When selecting the template, select <em>Board</em> under the <strong>Start from scratch</strong> section of the pop-up menu and click <em>Create</em>.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -663,7 +687,7 @@ sourceSets {
 </div>
 </div>
 <div class="paragraph">
-<p>Below is the layout of the Basic KanBan Board.</p>
+<p>Name your project by selecting the default titular text and replacing it with your own porject&#8217;s name. This layout is known as KanBan. By default there are three columns: <strong>To do</strong>, <strong>In progress</strong> and <strong>Done</strong>. More columns can be added by clicking the <strong>+</strong> button at the far right.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -671,10 +695,7 @@ sourceSets {
 </div>
 </div>
 <div class="paragraph">
-<p>By default there are three columns: <strong>To do</strong>, <strong>In progress</strong> and <strong>Done</strong>. More columns can be added by clicking the add column area.</p>
-</div>
-<div class="paragraph">
-<p>Issues that exist already on the GitHub issue board can be searched by filter, then dragged and dropped into the board space. This is done by clicking <em>Add cards</em> at the top right corner.</p>
+<p>Any repository can be added to a project by navigating to the <em>Projects</em> tab of the repository, selecting the <em>Add project</em> button and choosing the desired project from the dropdown menu. Project KanBan boards can be viewed by clicking the <em>Projects</em> tab of the repository and selecting the appropriate Project.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -682,51 +703,34 @@ sourceSets {
 </div>
 </div>
 <div class="paragraph">
-<p>It is generally prudent as a software engineer to automate away tedious tasks. You only need to automate it once. You can select various automation actions by clicking the ellipsis (&#8230;&#8203;) at the top right corner of each board.</p>
+<p>To help with better management of the project as you move through project phases, it is prudent to add Milestones. A new milestone can be created by selecting the <em>Issues</em> tab in the repository, and selecting the <em>Milestones</em> tab located next to the <em>New issue</em> button.</p>
+</div>
+<div class="paragraph">
+<p>To create a new milestone, select the <em>New Milestone</em> button. Then, fill out the form with an appropriate name, due date and description. Once your milestone has been created, you can attach issues to the milestone and see their progress by selecting the <em>Milestones</em> tab. Name your Milestone appropriately, denote the due date and enter a description.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="figs/GitProj11.PNG" alt="GitHub project milestone creation button">
+</div>
+</div>
+<div class="paragraph">
+<p>With Milestones and Projects set up, issues can now be assigned to the appropriate project and Milestones. Their status should be changed so they are automatically triaged under the correct KanBan column that matches. As issues are completed and closed, don&#8217;t forget to change their status. Closing issues will fill the progress bar on Milestones, while assigning the status of Done shifts issues on the KanBan board.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The status of issues can only be changed after they are created.
+</td>
+</tr>
+</table>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="figs/GitProj8.PNG" alt="GitHub project automation">
-</div>
-</div>
-<div class="paragraph">
-<p>That way when you create an issue on the issue board, close an issue etc. it is automatically added to the proper column.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="figs/GitProj9.PNG" alt="GitHub project automation result">
-</div>
-</div>
-<div class="paragraph">
-<p>To help with better management of the project as you move through project phases, it is prudent to add Milestones. A new milestone can be created by selecting the <em>Issues</em> tab in the repository, and selecting the <em>Milestones</em> tab located next to the <em>New issue</em> button.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="figs/GitProj10.PNG" alt="GitHub project milestone creation">
-</div>
-</div>
-<div class="paragraph">
-<p>To create a new milestone, select the <em>New Milestone</em> button. Then, fill out the form with an appropriate name, due date and description. Once your milestone has been created, you can attach issues to the milestone and see their progress by selecting the <em>Milestones</em> tab.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="figs/GitProj11.PNG" alt="GitHub project milestone creation button">
-</div>
-</div>
-<div class="paragraph">
-<p>To help with better management of the project as you move through project phases, it is prudent to add Milestones. A new milestone can be created by selecting the <em>Issues</em> tab in the repository, and selecting the <em>Milestones</em> tab located next to the <em>New issue</em> button.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="figs/GitProj10.PNG" alt="GitHub project milestone creation">
-</div>
-</div>
-<div class="paragraph">
-<p>To create a new milestone, select the <em>New Milestone</em> button. Then, fill out the form with an appropriate name, due date and description. Once your milestone has been created, you can attach issues to the milestone and see their progress by selecting the <em>Milestones</em> tab.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="figs/GitProj11.PNG" alt="GitHub project milestone creation button">
 </div>
 </div>
 <div class="imageblock">
@@ -735,18 +739,10 @@ sourceSets {
 </div>
 </div>
 <div class="paragraph">
-<p>Finally, you can create issues to track. This is very straight forward, (select <em>New issue</em> button under the <em>Issues</em> tab of the repository), so the rest of this section will deal with some best practices when tracking issues in this course.</p>
-</div>
-<div class="paragraph">
 <p>When creating a new issue it is imperative to be concise but also as descriptive as possible. All the issues you create should have a title, with a comment to describe the issue in detail.</p>
 </div>
 <div class="paragraph">
 <p>All issues at the time of creation should be assigned to someone. You can always change this later. Label your issues. If none of the default labels fit, new labels can be created to meet your need. This is accomplished by selecting the <em>Labels</em> tab next to the <em>Milestones</em> tab under the <em>Issues</em> section. Then click the <em>New Label</em> button. Finally, assign your issue to the appropriate milestone and project.<br></p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="figs/GitProj13.PNG" alt="GitHub project issue creation">
-</div>
 </div>
 <div class="paragraph">
 <p>For the purpose of tracking progress through the project, never ever ever delete issues. Issues should be closed and reopened as needed but never deleted. Even if a mistake was made during creation of an issue, issues can be edited by their creator.</p>
@@ -783,6 +779,9 @@ sourceSets {
 <div class="content">
 <img src="figs/githubactions1.png" alt="githubactions1">
 </div>
+</div>
+<div class="paragraph">
+<p>Workflows are automated processes to run one or more jobs. Each .yml file contains a single workflow.</p>
 </div>
 </li>
 <li>
@@ -833,7 +832,70 @@ The configurations in this YML file are used to determine the environment in whi
 </table>
 </div>
 <div class="paragraph">
-<p>All that&#8217;s left to do is test to make sure it works. Go to local working copy of your repository and initiate a fetch, add, commit, status and push command in that order.</p>
+<p>Each part of the .yml is described below. For more detailed coverage of GitHub Actions, visit the documentation page <a href="https://docs.github.com/en/actions">here</a>.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+name
+</td>
+<td class="hdlist2">
+<p>Name of the workflow or work step as it will appear in the Actions and workflow insight of the GitHub repository.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+on[event]
+</td>
+<td class="hdlist2">
+<p>Trigger event that causes execution of workflow.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+jobs
+</td>
+<td class="hdlist2">
+<p>Groups all jobs that run in the workflow.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+runs-on
+</td>
+<td class="hdlist2">
+<p>Configures job to run on latest version of specified OS.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+steps
+</td>
+<td class="hdlist2">
+<p>Groups together steps of parent job.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+uses
+</td>
+<td class="hdlist2">
+<p>Specifies what action will run on the particular step</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+run
+</td>
+<td class="hdlist2">
+<p>Specifies a command to run.</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>All that&#8217;s left to do is test to make sure it works. Go to local working copy of your repository and initiate a pull, add, commit, status and push command in that order.</p>
 </div>
 <div class="paragraph">
 <p>The result of workflow runs can be seen under the <em>Actions</em> tab of the repository.</p>
@@ -860,10 +922,475 @@ The configurations in this YML file are used to determine the environment in whi
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="truebackend"><a class="anchor" href="#truebackend"></a>2. Backend</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="truethe-domain-mode"><a class="anchor" href="#truethe-domain-mode"></a>2.1. The Domain Mode</h3>
+<div class="paragraph">
+<p>Our task is to build an event registration application that allows people to register for events. Before we can program anything we need to model the application.</p>
+</div>
+<div class="paragraph">
+<p>First, create a gradle project  following the steps given in <strong>Section 1.1</strong>. Your project structure should look like this.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="none" class="language-none hljs">EventRegistration-Backend
+├── build.gradle
+├── settings.gradle
+└── src
+    ├── main
+    │   ├── java
+    │   │   └── ca\mcgill\ecse321\eventregistration
+    │   │        └── EventRegistrationApplication.java
+    │   └── resources
+    │       └── application.settings
+    │
+    └── test
+        └── java
+            └── ca\mcgill\ecse321\eventregistration
+                └── EventRegistrationApplicationTests</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For this, use the free modelling program <a href="https://cruise.umple.org/umpleonline/">Umple</a>. Full documentation on how to use Umple can be found <a href="https://cruise.umple.org/umple/GettingStarted.html">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>Ensure that Umple is configured as shown in the image below:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="figs/UmpleConfig.png" alt="UmpleConfig">
+</div>
+</div>
+<div class="paragraph">
+<p>Our task for this tutorial will be to create a simple event registration application that allows people to sign up and register for events.</p>
+</div>
+<div class="paragraph">
+<p>The final model can be found below and is generated by the following code:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="figs/DomainModel.PNG" alt="DomainModel">
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="Umple" class="language-Umple hljs">class RegistrationManager
+{
+}
+
+class Person
+{
+  name;
+}
+
+class Event
+{
+  name;
+  Date eventDate;
+  Time startTime;
+  Time endTime;
+}
+
+class Registration
+{
+  Integer id;
+  }
+
+association {
+    1 RegistrationManager registrationManager &lt;@&gt;- 0..* Registration registrations;
+}
+
+association {
+    1 RegistrationManager registrationManager &lt;@&gt;- 0..* Event events;
+}
+
+association {
+    1 RegistrationManager registrationManager &lt;@&gt;- 0..* Person persons;
+}
+
+association {
+   0..* Registration registration -&gt;  1 Event event ;
+}
+
+
+association {
+    0..* Registration registration -&gt;  1 Person person;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Although the Umple generated Java code can be used, but is too verbose and not JPA compliant. You can see this by comparing the generated Java code to the code found in <a href="https://github.com/McGill-ECSE321-Fall2020/ecse321-tutorial-notes/raw/master/resources/Model%20Classes.zip">Model Classes.zip</a>.</p>
+</div>
+<div class="paragraph">
+<p>This is an exercise in being able to write JPA compliant code simply by looking at the domain model. A brief explanation for relevant JPA tags is here provided:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>@Entity</strong>: Placed before the class declaration to signify an entity.</p>
+</li>
+<li>
+<p><strong>@Id</strong>: Placed before the get method for the attribute that will serve as the primary identifier for the class.</p>
+</li>
+<li>
+<p><strong>@OnetoMany</strong> or <strong>@ManytoOne</strong>: Placed before get method for attribute to signify the multiplicity in associative relationship between the current class and reference class. The first word is the multiplicity of the current class, with the other representing the multiplicity of the other calss. The <em>cascade</em> property being set to <em>cascadeType.ALL</em> ensures all operations of the defining class are persisted. The <em>optional</em> property being set to false means the association the tag defines must exist. In this case, the defining class cannot exist without knowledge of the referenced class.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Once your java code has been annotated, create a new folder under <em>src&gt;main&gt;java</em> called model and add the model files into that folder. Each class in our domain model should have its own file. Make sure your model files declare the package:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package ca.mcgill.ecse321.eventregistration.model;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Your folder structure should now look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="none" class="language-none hljs">EventRegistration-Backend
+├── build.gradle
+├── settings.gradle
+└── src
+    ├── main
+    │   ├── java
+    │   │   └── ca\mcgill\ecse321\eventregistration
+    │   │        ├── EventRegistrationApplication.java
+    │   │        └── model
+    │   │            ├── Event.java
+    │   │            ├── Person.java
+    │   │            ├── Registration.java
+    │   │            └── RegistrationManager.java
+    │   └── resources
+    │       └── application.settings
+    │
+    └── test
+        └── java
+            └── ca\mcgill\ecse321\eventregistration
+                └── EventRegistrationApplicationTests</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truesetting-up-a-spring-based-backend"><a class="anchor" href="#truesetting-up-a-spring-based-backend"></a>2.2. Setting up a Spring-based Backend</h3>
+<div class="paragraph">
+<p>You can download the Spring Tools Suite IDE from <a href="https://spring.io/tools">here</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="truerunning-the-backend-application-from-eclipse"><a class="anchor" href="#truerunning-the-backend-application-from-eclipse"></a>2.2.1. Running the Backend Application from Eclipse</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Import the <strong>EventRegistration-Backend</strong> Spring Boot project as a Gradle project from <em>File &gt; Import&#8230;&#8203; &gt; Gradle &gt; Existing Gradle project</em> using the default settings. Select the previously generated Spring project folder as the root of the project.<br>
+<span class="image"><img src="figs/gradle-import.png" alt="Gradle project import in Eclipse" width="600"></span></p>
+</li>
+<li>
+<p>Ignore the bin folder.<br>
+<span class="image"><img src="figs/sts-ignore-bin.png" alt="sts ignore bin" width="600"></span></p>
+</li>
+<li>
+<p>Find the <code>EventRegistrationApplication.java</code> source file, then right click and select <em>Run As &gt; Spring Boot App</em>. The application will fail to start, since the database is not yet configured, but this action will create an initial run configuration. Example console output (fragment):</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[...]
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Failed to configure a DataSource: 'url' attribute is not specified and no embedded datasource could be configured.
+
+Reason: Failed to determine a suitable driver class
+[...]</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Obtain the database URL to access the database remotely, e.g., by opening up a terminal and running:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>heroku run echo \$JDBC_DATABASE_URL --app=&lt;YOUR_BACKEND_APP_NAME&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you are on Windows, open up command line or powershell and run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">heroku run echo '$JDBC_DATABASE_URL' --app=&lt;YOUR_BACKEND_APP_NAME&gt;</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In Eclipse, open the <em>EventRegistration-Backend - EventregistrationApplication</em> run configuration page and add an environment variable called <code>SPRING_DATASOURCE_URL</code> with the value obtained in the previous step.<br>
+<span class="image"><img src="figs/jdbc-url.png" alt="Adding env var to run config" width="600"></span></p>
+</li>
+<li>
+<p>Add the <code>spring.jpa.hibernate.ddl-auto=update</code> to <code>application.properties</code>. The database content along with the tables this way will be deleted (as necessary) then re-created each time your application starts.<br></p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+In production, the value of this property should be <code>none</code> (instead of <code>update</code>). Possible values are <code>none</code>, <code>create</code>, <code>validate</code>, and <code>update</code>.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>If needed: troubleshooting:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If you get an error message saying something similar to <code>createClob() is not yet implemented</code>, then you can try setting the <code>spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true</code> variable in your <code>application.properties</code>. It could be a workaround a workaround for an issue with Postgres.<br></p>
+</li>
+<li>
+<p>Sometimes environment variables don&#8217;t work with Spring apps. In this case you can set the <code>spring.datasource.url</code>, the <code>spring.datasource.username</code>, and the <code>spring.datasource.password</code> variables in the application properties as an alternative to setting the <code>SPRING_DATASOURCE_URL</code> environment variable.<br></p>
+</li>
+<li>
+<p>Make sure no other apps are running on <a href="localhost:8080">localhost:8080</a>. You can test it by opening the browser and entering <code>localhost:8080</code> as the address.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truespring-transactions"><a class="anchor" href="#truespring-transactions"></a>2.2.2. Spring Transactions</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Verify</strong> the contents of the <code>EventRegistrationBackendApplication</code> class:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package ca.mcgill.ecse321.eventregistration;
+
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.SpringApplication;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@RestController
+@SpringBootApplication
+public class EventRegistrationBackendApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(EventRegistrationApplication.class, args);
+	}
+
+	@RequestMapping("/")
+	public String greeting() {
+		return "Hello world!";
+	}
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create a new package in <code>src/main/java</code> and name it <code>ca.mcgill.ecse321.eventregistration.dao</code>.</p>
+</li>
+<li>
+<p>Create the <code>EventRegistrationRepository</code> class within this new package</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package ca.mcgill.ecse321.eventregistration.dao;
+
+import java.sql.Date;
+import java.sql.Time;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import ca.mcgill.ecse321.eventregistration.model.Person;
+import ca.mcgill.ecse321.eventregistration.model.Event;
+
+@Repository
+public class EventRegistrationRepository {
+
+	@Autowired
+	EntityManager entityManager;
+
+	@Transactional
+	public Person createPerson(String name) {
+		Person p = new Person();
+		p.setName(name);
+		entityManager.persist(p);
+		return p;
+	}
+
+	@Transactional
+	public Person getPerson(String name) {
+		Person p = entityManager.find(Person.class, name);
+		return p;
+	}
+
+	@Transactional
+	public Event createEvent(String name, Date date, Time startTime, Time endTime) {
+		Event e = new Event();
+		e.setName(name);
+		e.setDate(date);
+		e.setStartTime(startTime);
+		e.setEndTime(endTime);
+		entityManager.persist(e);
+		return e;
+	}
+
+	@Transactional
+	public Event getEvent(String name) {
+		Event e = entityManager.find(Event.class, name);
+		return e;
+	}
+
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Add a new method that gets all events before a specified date (<code>deadline</code>). Use a typed query created from an SQL command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Transactional
+public List&lt;Event&gt; getEventsBeforeADeadline(Date deadline) {
+	TypedQuery&lt;Event&gt; q = entityManager.createQuery("select e from Event e where e.date &lt; :deadline",Event.class);
+	q.setParameter("deadline", deadline);
+	List&lt;Event&gt; resultList = q.getResultList();
+	return resultList;
+}</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+To try the methods, you can create a JUnit test under <em>src/test/java</em>. Currently the methods in <code>EventRegistrationRepository</code> directly access the objects stored in the database via the <code>EntityManager</code> instance and these methods should implement both database operations and service business logic (including input validation&#8201;&#8212;&#8201;which we omitted in this part). In later sections, however, we will see how we can easily separate the database access and the service business logic in Spring applications.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truecrud-repositories"><a class="anchor" href="#truecrud-repositories"></a>2.3. CRUD Repositories</h3>
+<div class="paragraph">
+<p>Previously, in the <code>ca.mcgill.ecse321.eventregistration.dao.EventRegistrationRepository</code> class we used an instance of <code>javax.persistence.EntityManager</code> from Hibernate to directly implement the required operations related to saving/retrieving data to/from a database (Create, Read, Update, and Delete operations, shortly, CRUD).
+This section will introduce the Spring framework&#8217;s inbuilt support for such CRUD operations via the <code>org.springframework.data.repository.CrudRepository</code> interface and will show how to use such repositories to implement your use cases in so-called <em>service</em> classes.</p>
+</div>
+<div class="paragraph">
+<p>If you would like to, you can obtain a version of the project that already has the code for the backend and model classes from the previous tutorials <a href="https://github.com/McGill-ECSE321-Fall2020/eventregistration">here</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="truecreating-a-crud-repository"><a class="anchor" href="#truecreating-a-crud-repository"></a>2.3.1. Creating a CRUD Repository</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a new interface <code>PersonRepository</code> in the <code>ca.mcgill.ecse321.eventregistration.dao</code> package and extend the <code>CrudRepository&lt;Person, String&gt;</code> interface</p>
+</li>
+<li>
+<p>Create a new method <code>Person findByName(String name)</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package ca.mcgill.ecse321.eventregistration.dao;
+
+import org.springframework.data.repository.CrudRepository;
+
+import ca.mcgill.ecse321.eventregistration.model.Person;
+
+public interface PersonRepository extends CrudRepository&lt;Person, String&gt;{
+
+	Person findPersonByName(String name);
+
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Since Spring supports automated JPA Query creation from method names (see <a href="https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.query-creation">possible language constructs here</a>) <strong>we don&#8217;t need to implement the interface manually</strong>, Spring JPA will create the corresponding queries runtime! This way we don&#8217;t need to write SQL queries either.</p>
+</li>
+<li>
+<p>Create interfaces for the <code>Event</code> and <code>Registration</code> classes as well<br>
+<em>EventRepository.java</em>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package ca.mcgill.ecse321.eventregistration.dao;
+
+import org.springframework.data.repository.CrudRepository;
+
+import ca.mcgill.ecse321.eventregistration.model.Event;
+
+public interface EventRepository extends CrudRepository&lt;Event, String&gt; {
+
+	Event findEventByName(String name);
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>RegistrationRepository.java</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package ca.mcgill.ecse321.eventregistration.dao;
+
+import java.util.List;
+
+import org.springframework.data.repository.CrudRepository;
+
+import ca.mcgill.ecse321.eventregistration.model.Event;
+import ca.mcgill.ecse321.eventregistration.model.Person;
+import ca.mcgill.ecse321.eventregistration.model.Registration;
+
+public interface RegistrationRepository extends CrudRepository&lt;Registration, Integer&gt; {
+
+	List&lt;Registration&gt; findByPerson(Person personName);
+
+	boolean existsByPersonAndEvent(Person person, Event eventName);
+
+	Registration findByPersonAndEvent(Person person, Event eventName);
+
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Finally, create a new package in <code>src/main/java</code> and name it <code>ca.mcgill.ecse321.eventregistration.model</code>. Place all the model classes generated in the Step 2.4. By now, all the errors in all other packages should be resolved automatically. In the end, you should have the given below structure in terms of packages.<br></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="figs/package-structure-1.png" alt="Package Structure" width="400"></span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-09-15 22:23:00 -0400
+Last updated 2022-10-18 11:11:45 -0400
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

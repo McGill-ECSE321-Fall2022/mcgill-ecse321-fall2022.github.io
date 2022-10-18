@@ -1,0 +1,108 @@
+=== Database Communication With and Without Spring Framework
+In this section we will see how to communications with the database are programmed. Don't worry about setting up the Spring Framework or the database server for the time being. The goal is to illustrate the concept. 
+
+==== CRUD Transactions Without Spring
+
+. *Verify* the contents of the `EventRegistrationBackendApplication` class: 
++ 
+[source,java]
+----
+package ca.mcgill.ecse321.eventregistration;
+
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.SpringApplication;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@RestController
+@SpringBootApplication
+public class EventRegistrationBackendApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(EventRegistrationApplication.class, args);
+	}
+
+	@RequestMapping("/")
+	public String greeting() {
+		return "Hello world!";
+	}
+}
+----
+
+. Create a new package in `src/main/java` and name it `ca.mcgill.ecse321.eventregistration.dao`.
+
+. Create the `EventRegistrationRepository` class within this new package
++
+[source,java]
+----
+package ca.mcgill.ecse321.eventregistration.dao;
+
+import java.sql.Date;
+import java.sql.Time;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import ca.mcgill.ecse321.eventregistration.model.Person;
+import ca.mcgill.ecse321.eventregistration.model.Event;
+
+@Repository
+public class EventRegistrationRepository {
+
+	@Autowired
+	EntityManager entityManager;
+
+	@Transactional
+	public Person createPerson(String name) {
+		Person p = new Person();
+		p.setName(name);
+		entityManager.persist(p);
+		return p;
+	}
+	
+	@Transactional
+	public Person getPerson(String name) {
+		Person p = entityManager.find(Person.class, name);
+		return p;
+	}
+	
+	@Transactional
+	public Event createEvent(String name, Date date, Time startTime, Time endTime) {
+		Event e = new Event();
+		e.setName(name);
+		e.setDate(date);
+		e.setStartTime(startTime);
+		e.setEndTime(endTime);
+		entityManager.persist(e);
+		return e;
+	}
+	
+	@Transactional
+	public Event getEvent(String name) {
+		Event e = entityManager.find(Event.class, name);
+		return e;
+	}
+	
+}
+----
+
+. Add a new method that gets all events before a specified date (`deadline`). Use a typed query created from an SQL command:
++
+[source,java]
+----
+@Transactional
+public List<Event> getEventsBeforeADeadline(Date deadline) {
+	TypedQuery<Event> q = entityManager.createQuery("select e from Event e where e.date < :deadline",Event.class);
+	q.setParameter("deadline", deadline);
+	List<Event> resultList = q.getResultList();
+	return resultList;
+}
+----
+
+[NOTE]
+To try the methods, you can create a JUnit test under _src/test/java_. Currently the methods in `EventRegistrationRepository` directly access the objects stored in the database via the `EntityManager` instance and these methods should implement both database operations and service business logic (including input validation -- which we omitted in this part). In later sections, however, we will see how we can easily separate the database access and the service business logic in Spring applications.
