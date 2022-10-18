@@ -456,10 +456,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#truebackend">2. Backend</a>
 <ul class="sectlevel2">
 <li><a href="#truethe-domain-mode">2.1. The Domain Mode</a></li>
-<li><a href="#truesetting-up-a-spring-based-backend">2.2. Setting up a Spring-based Backend</a>
+<li><a href="#truedatabase-communication-with-and-without-spring-framework">2.2. Database Communication With and Without Spring Framework</a>
 <ul class="sectlevel3">
-<li><a href="#truerunning-the-backend-application-from-eclipse">2.2.1. Running the Backend Application from Eclipse</a></li>
-<li><a href="#truespring-transactions">2.2.2. Spring Transactions</a></li>
+<li><a href="#truecrud-transactions-without-spring">2.2.1. CRUD Transactions Without Spring</a></li>
 </ul>
 </li>
 <li><a href="#truecrud-repositories">2.3. CRUD Repositories</a>
@@ -1076,100 +1075,12 @@ association {
 </div>
 </div>
 <div class="sect2">
-<h3 id="truesetting-up-a-spring-based-backend"><a class="anchor" href="#truesetting-up-a-spring-based-backend"></a>2.2. Setting up a Spring-based Backend</h3>
+<h3 id="truedatabase-communication-with-and-without-spring-framework"><a class="anchor" href="#truedatabase-communication-with-and-without-spring-framework"></a>2.2. Database Communication With and Without Spring Framework</h3>
 <div class="paragraph">
-<p>You can download the Spring Tools Suite IDE from <a href="https://spring.io/tools">here</a>.</p>
+<p>In this section we will see how to communications with the database are programmed. Don&#8217;t worry about setting up the Spring Framework or the database server for the time being. The goal is to illustrate the concept.</p>
 </div>
 <div class="sect3">
-<h4 id="truerunning-the-backend-application-from-eclipse"><a class="anchor" href="#truerunning-the-backend-application-from-eclipse"></a>2.2.1. Running the Backend Application from Eclipse</h4>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Import the <strong>EventRegistration-Backend</strong> Spring Boot project as a Gradle project from <em>File &gt; Import&#8230;&#8203; &gt; Gradle &gt; Existing Gradle project</em> using the default settings. Select the previously generated Spring project folder as the root of the project.<br>
-<span class="image"><img src="figs/gradle-import.png" alt="Gradle project import in Eclipse" width="600"></span></p>
-</li>
-<li>
-<p>Ignore the bin folder.<br>
-<span class="image"><img src="figs/sts-ignore-bin.png" alt="sts ignore bin" width="600"></span></p>
-</li>
-<li>
-<p>Find the <code>EventRegistrationApplication.java</code> source file, then right click and select <em>Run As &gt; Spring Boot App</em>. The application will fail to start, since the database is not yet configured, but this action will create an initial run configuration. Example console output (fragment):</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[...]
-***************************
-APPLICATION FAILED TO START
-***************************
-
-Description:
-
-Failed to configure a DataSource: 'url' attribute is not specified and no embedded datasource could be configured.
-
-Reason: Failed to determine a suitable driver class
-[...]</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Obtain the database URL to access the database remotely, e.g., by opening up a terminal and running:</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>heroku run echo \$JDBC_DATABASE_URL --app=&lt;YOUR_BACKEND_APP_NAME&gt;</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If you are on Windows, open up command line or powershell and run:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">heroku run echo '$JDBC_DATABASE_URL' --app=&lt;YOUR_BACKEND_APP_NAME&gt;</code></pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>In Eclipse, open the <em>EventRegistration-Backend - EventregistrationApplication</em> run configuration page and add an environment variable called <code>SPRING_DATASOURCE_URL</code> with the value obtained in the previous step.<br>
-<span class="image"><img src="figs/jdbc-url.png" alt="Adding env var to run config" width="600"></span></p>
-</li>
-<li>
-<p>Add the <code>spring.jpa.hibernate.ddl-auto=update</code> to <code>application.properties</code>. The database content along with the tables this way will be deleted (as necessary) then re-created each time your application starts.<br></p>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-In production, the value of this property should be <code>none</code> (instead of <code>update</code>). Possible values are <code>none</code>, <code>create</code>, <code>validate</code>, and <code>update</code>.
-</td>
-</tr>
-</table>
-</div>
-</li>
-<li>
-<p>If needed: troubleshooting:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>If you get an error message saying something similar to <code>createClob() is not yet implemented</code>, then you can try setting the <code>spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true</code> variable in your <code>application.properties</code>. It could be a workaround a workaround for an issue with Postgres.<br></p>
-</li>
-<li>
-<p>Sometimes environment variables don&#8217;t work with Spring apps. In this case you can set the <code>spring.datasource.url</code>, the <code>spring.datasource.username</code>, and the <code>spring.datasource.password</code> variables in the application properties as an alternative to setting the <code>SPRING_DATASOURCE_URL</code> environment variable.<br></p>
-</li>
-<li>
-<p>Make sure no other apps are running on <a href="localhost:8080">localhost:8080</a>. You can test it by opening the browser and entering <code>localhost:8080</code> as the address.</p>
-</li>
-</ul>
-</div>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect3">
-<h4 id="truespring-transactions"><a class="anchor" href="#truespring-transactions"></a>2.2.2. Spring Transactions</h4>
+<h4 id="truecrud-transactions-without-spring"><a class="anchor" href="#truecrud-transactions-without-spring"></a>2.2.1. CRUD Transactions Without Spring</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1390,7 +1301,7 @@ public interface RegistrationRepository extends CrudRepository&lt;Registration, 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-10-18 11:11:45 -0400
+Last updated 2022-10-18 11:38:06 -0400
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
