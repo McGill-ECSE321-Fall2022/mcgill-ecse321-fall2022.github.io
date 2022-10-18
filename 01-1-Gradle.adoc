@@ -1,0 +1,128 @@
+=== Gradle: A Build Framework and Brief Example
+
+This section focuses on writing a Gradle (https://gradle.org/) build script that builds a single Gradle project referred to as _Computation_. The source code and tests for a Java application is available here: link:https://github.com/McGill-ECSE321-Fall2020/ecse321-tutorial-notes/raw/master/resources/Computation.zip[Computation.zip]. It is your job to create/reorganize the folder called _Computation_, move sources and tests into that folder, and produce the Gradle build script _build.gradle_ within this folder to automate the software build and testing process for this example project. 
+
+First, open a terminal, and ensure you have the newest version  of Gradle (ver. 7.0+) installed with `gradle --version`.
+
+Follow the steps below and add the snippets listed here to `build.gradle`, one after the other:
+
+. Create the following folder structure and a new _build.gradle_ (empty) file within the _Computation_ folder:
++
+[source,none]
+----
+Computation
+├── build.gradle
+└── src
+    ├── main
+    │   └── java
+    │       ├── application
+    │       │   └── CompApp.java
+    │       ├── computation
+    │       │   └── Computation.java
+    │       └── view
+    │           └── ComputationPage.java
+    └── test
+        └── java
+            └── computation
+                ├── AllTests.java
+                ├── ComputationTestAddSubstract.java
+                └── ComputationTestDivideMultiply.java
+----
++
+
+For Gradle to build your projects correctly, this is the expected file structure. The `src` folder is divided up into two subdirectories: `\main` (all application code goes here) and `\test` (all tests go here). There *MUST* be a `java` subfolder within both these subdirectories containing all code. If you do not follow this folder structure, you will need to define `SourceSets`. More on this later.
+
+. Add the `java` and the `application` plugins to the build configuration script _build.gradle_. 
++
+[source,gradle]
+----
+apply plugin: 'java'
+// This plugin has a predefined 'run' task that we can reuse to use Gradle to execute our application
+apply plugin: 'application'
+----
++
+A plugin is simply a set of useful tasks that bundled up that extend our project's capabilities. There are two types of plugins:
+[horizontal]
+Script:: additional build script that is declarative in manipulating the build.
+Binary:: Classes that implement the plugin interface and programmatic in manipulating the build.
++
+More information on plugins can be found link:https://docs.gradle.org/current/userguide/plugins.html[here].
+
+. Add JUnit libraries to the `dependencies` section.
++
+[source,gradle]
+----
+repositories {
+    mavenCentral()
+}
+dependencies {
+    testImplementation "junit:junit:4.12"
+}
+----
+Dependencies are external files from other projects that our project relies on to compile, and/or test our source code. Gradle looks for dependencies in repositories. There is no default repository for Gradle so we have to specify one or several.
+
+. Add and describe a new task `compile(type: JavaCompile)` to specify all source files (both application and test) and set the _build/bin_ as destination dir to put all compiled class files in. 
++
+[source,gradle]
+----
+task compile(type: JavaCompile) {
+  classpath = sourceSets.main.compileClasspath
+  classpath += sourceSets.test.runtimeClasspath
+  sourceSets.test.java.outputDir = file('build/bin')
+  sourceSets.main.java.outputDir = file('build/bin')
+}
+
+task stage () {
+    dependsOn ':Computation:assemble'
+}
+----
++
+Tasks are blocks of work gradle must perform while building our project. Tasks can essentially do anything.
+[NOTE]
+One can specify source sets and their variables the following way:
++
+[source,gradle]
+----
+/*
+ * specifying sourceSets is not necessary in this case, since
+ * we are applying the default folder structure assumed by Gradle
+ */
+sourceSets {
+  main {
+    java { srcDir 'src/main/java' }
+  }
+  test {
+    java { srcDir 'src/test/java'}
+  }
+}
+----
+Although this isn't necessary, as we follow the default folder structure assumed by Gradle, it is still good practice to do this in case our folder structure changes.
+. Specify the main class and run the application.
++
+[source,gradle]
+----
+mainClassName='application.CompApp'
+----
++
+In the command line issue `gradle run`
+
+. Describe the `jar` Gradle task (defined by the `java` plugin) to produce an executable jar file into `distributable/`.
++
+[source,gradle]
+----
+jar {
+  destinationDir=file('distributable')
+  manifest { 
+    // It is smart to reuse the name of the main class variable instead of hardcoding it
+    attributes "Main-Class": "$mainClassName"
+  }  
+}
+----
+
+. Create the `settings.gradle` file and add the following line:
+
++
+[source,gradle]
+----
+include ':Computation'
+----

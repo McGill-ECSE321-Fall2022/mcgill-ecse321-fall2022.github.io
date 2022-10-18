@@ -1,0 +1,12 @@
+= ECSE 321 Introduction to Software Engineering: Tutorial
+:sectnums:
+:toc: left
+:toclevels: 3
+
+:toc!:
+
+Sections of the tutorial will continuously be published at this web page.
+
+This tutorial serves to give you the practical knowledge required to execute the group project in true AGILE fashion. 
+
+include::01-PMT-TC.adoc[]
