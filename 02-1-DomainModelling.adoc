@@ -1,4 +1,4 @@
-=== The Domain Mode
+=== The Domain Model
 
 Our task is to build an event registration application that allows people to register for events. Before we can program anything we need to model the application. 
 
