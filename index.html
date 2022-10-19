@@ -469,6 +469,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#testing-the-persistence-layer">2.4. Testing the Persistence Layer</a>
 <ul class="sectlevel3">
 <li><a href="#writing-a-test">2.4.1. Writing a Test</a></li>
+<li><a href="#running-the-tests">2.4.2. Running the Tests</a></li>
+<li><a href="#debugging-failing-tests">2.4.3. Debugging Failing Tests</a></li>
 </ul>
 </li>
 </ul>
@@ -1334,25 +1336,11 @@ public interface RegistrationRepository extends CrudRepository&lt;Registration, 
 <p>You also want to clear the database after each run so that you don&#8217;t waste storage space and so that you avoid violating any unique constraints. Define a method <code>clearDatabase()</code> with the annotation <code>@AfterEach</code> that clears all relevant tables.</p>
 </div>
 <div class="paragraph">
-<p>Create a class to test the persistence of <code>Person</code> objects. It should look something like this:</p>
+<p>The test class for the <code>PersonRepository</code> should be similar to the following code. The package and import statements have been omited for clarity.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>package ca.mcgill.ecse321.eventregistration.dao;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import ca.mcgill.ecse321.eventregistration.model.Person;
-
-@SpringBootTest
+<pre class="highlight"><code>@SpringBootTest
 public class PersonRepositoryTests {
 	@Autowired
 	private PersonRepository personRepository;
@@ -1384,30 +1372,11 @@ public class PersonRepositoryTests {
 </div>
 </div>
 <div class="paragraph">
-<p>Create a class to test the persistence of <code>Registration</code> objects. It should look something like this:</p>
+<p>The test class for the <code>RegistrationRepository</code> should look something like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>package ca.mcgill.ecse321.eventregistration.dao;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.sql.Date;
-import java.sql.Time;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import ca.mcgill.ecse321.eventregistration.model.Event;
-import ca.mcgill.ecse321.eventregistration.model.Person;
-import ca.mcgill.ecse321.eventregistration.model.Registration;
-
-@SpringBootTest
+<pre class="highlight"><code>@SpringBootTest
 public class RegistrationRepositoryTests {
 	@Autowired
 	private PersonRepository personRepository;
@@ -1474,13 +1443,57 @@ public class RegistrationRepositoryTests {
 <p>Creating a class to test the persistence of <code>Event</code> objects is left as an exercise. It is similar to the test class for <code>Person</code> objects.</p>
 </div>
 </div>
+<div class="sect3">
+<h4 id="running-the-tests"><a class="anchor" href="#running-the-tests"></a>2.4.2. Running the Tests</h4>
+<div class="paragraph">
+<p>To run the tests, <code>cd</code> into the <code>EventRegistration-Backend</code> folder and issue the command <code>./gradlew test</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="debugging-failing-tests"><a class="anchor" href="#debugging-failing-tests"></a>2.4.3. Debugging Failing Tests</h4>
+<div class="paragraph">
+<p>You will almost certainly encounter failing tests at some point. When this happens, it is usually helpful to read the stack trace and see if there are any helpful hints. At first you will probably find that the stack traces are short and not very informative. Add the following snippet inside the <code>test</code> task in your <code>build.gradle</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>testLogging {
+	exceptionFormat "full"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Re-run the tests and you should see much longer stack traces with helpful hints. Focus on the "Caused by:" parts.</p>
+</div>
+<div class="paragraph">
+<p>If <em>all</em> the tests are failing (including <code>contextLoads()</code>), it means your project failed to start. This is generally because it failed to connect to the database or there is an issue with your model.</p>
+</div>
+<div class="sect4">
+<h5 id="common-errors"><a class="anchor" href="#common-errors"></a>Common Errors</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Missing or badly-formatted data in <code>application.properties</code>. You need a database driver, the URL of an existing database, a username, and a password. The database URL is particularly easy to mess up: it needs to follow the format <code>jdbc:postgresql://localhost:port/database_name</code>.</p>
+</li>
+<li>
+<p>Using reserved keywords for class names (e.g., <code>User</code>). This will result in a nasty SQL syntax error.</p>
+</li>
+<li>
+<p>Incorrectly named repository methods. For example, if you have a property <code>eventName</code> and you call your repository method <code>findEventByName()</code>, Spring will complain that there&#8217;s no property called <code>name</code> in the <code>Event</code> class.</p>
+</li>
+<li>
+<p>Missing annotations. For example, if you forget an <code>@Id</code> annotation, Spring will complain that there&#8217;s no unique identifier for your class.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-10-19 15:06:42 -0400
+Last updated 2022-10-19 19:16:03 -0400
 </div>
 </div>
 </body>

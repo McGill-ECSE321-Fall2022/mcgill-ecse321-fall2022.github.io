@@ -13,23 +13,9 @@ Use dependency injection (via the `@Autowired` annotation) to get an instance of
 
 You also want to clear the database after each run so that you don't waste storage space and so that you avoid violating any unique constraints. Define a method `clearDatabase()` with the annotation `@AfterEach` that clears all relevant tables.
 
-Create a class to test the persistence of `Person` objects. It should look something like this:
+The test class for the `PersonRepository` should be similar to the following code. The package and import statements have been omited for clarity.
 
 ``` 
-package ca.mcgill.ecse321.eventregistration.dao;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import ca.mcgill.ecse321.eventregistration.model.Person;
-
 @SpringBootTest
 public class PersonRepositoryTests {
 	@Autowired
@@ -61,27 +47,8 @@ public class PersonRepositoryTests {
 }
 ```
 
-Create a class to test the persistence of `Registration` objects. It should look something like this:
+The test class for the `RegistrationRepository` should look something like this:
 ``` 
-package ca.mcgill.ecse321.eventregistration.dao;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.sql.Date;
-import java.sql.Time;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import ca.mcgill.ecse321.eventregistration.model.Event;
-import ca.mcgill.ecse321.eventregistration.model.Person;
-import ca.mcgill.ecse321.eventregistration.model.Registration;
-
 @SpringBootTest
 public class RegistrationRepositoryTests {
 	@Autowired
@@ -148,3 +115,24 @@ public class RegistrationRepositoryTests {
 
 Creating a class to test the persistence of `Event` objects is left as an exercise. It is similar to the test class for `Person` objects.
 
+
+==== Running the Tests
+To run the tests, `cd` into the `EventRegistration-Backend` folder and issue the command `./gradlew test`.
+
+
+==== Debugging Failing Tests
+You will almost certainly encounter failing tests at some point. When this happens, it is usually helpful to read the stack trace and see if there are any helpful hints. At first you will probably find that the stack traces are short and not very informative. Add the following snippet inside the `test` task in your `build.gradle` file:
+```
+testLogging {
+	exceptionFormat "full"
+}
+```
+Re-run the tests and you should see much longer stack traces with helpful hints. Focus on the "Caused by:" parts.
+
+If _all_ the tests are failing (including `contextLoads()`), it means your project failed to start. This is generally because it failed to connect to the database or there is an issue with your model.
+
+===== Common Errors
+- Missing or badly-formatted data in `application.properties`. You need a database driver, the URL of an existing database, a username, and a password. The database URL is particularly easy to mess up: it needs to follow the format `jdbc:postgresql://localhost:port/database_name`.
+- Using reserved keywords for class names (e.g., `User`). This will result in a nasty SQL syntax error.
+- Incorrectly named repository methods. For example, if you have a property `eventName` and you call your repository method `findEventByName()`, Spring will complain that there's no property called `name` in the `Event` class.
+- Missing annotations. For example, if you forget an `@Id` annotation, Spring will complain that there's no unique identifier for your class.
