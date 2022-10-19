@@ -5,3 +5,5 @@ include::02-1-DomainModelling.adoc[]
 include::02-2-Spring-Tools-Suite.adoc[]
 
 include::02-3-Spring-CRUD.adoc[]
+
+include::02-4-Persistence-Testing.adoc[]
