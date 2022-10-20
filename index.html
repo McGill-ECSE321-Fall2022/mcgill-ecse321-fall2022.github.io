@@ -461,16 +461,22 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#crud-transactions-without-spring">2.2.1. CRUD Transactions Without Spring</a></li>
 </ul>
 </li>
-<li><a href="#crud-repositories">2.3. CRUD Repositories</a>
+<li><a href="#setting-up-a-local-postgresql-database">2.3. Setting Up a Local PostgreSQL Database</a>
 <ul class="sectlevel3">
-<li><a href="#creating-a-crud-repository">2.3.1. Creating a CRUD Repository</a></li>
+<li><a href="#installation">2.3.1. Installation</a></li>
+<li><a href="#creating-a-database">2.3.2. Creating a Database</a></li>
 </ul>
 </li>
-<li><a href="#testing-the-persistence-layer">2.4. Testing the Persistence Layer</a>
+<li><a href="#crud-repositories">2.4. CRUD Repositories</a>
 <ul class="sectlevel3">
-<li><a href="#writing-a-test">2.4.1. Writing a Test</a></li>
-<li><a href="#running-the-tests">2.4.2. Running the Tests</a></li>
-<li><a href="#debugging-failing-tests">2.4.3. Debugging Failing Tests</a></li>
+<li><a href="#creating-a-crud-repository">2.4.1. Creating a CRUD Repository</a></li>
+</ul>
+</li>
+<li><a href="#testing-the-persistence-layer">2.5. Testing the Persistence Layer</a>
+<ul class="sectlevel3">
+<li><a href="#writing-a-test">2.5.1. Writing a Test</a></li>
+<li><a href="#running-the-tests">2.5.2. Running the Tests</a></li>
+<li><a href="#debugging-failing-tests">2.5.3. Debugging Failing Tests</a></li>
 </ul>
 </li>
 </ul>
@@ -1212,7 +1218,105 @@ To try the methods, you can create a JUnit test under <em>src/test/java</em>. Cu
 </div>
 </div>
 <div class="sect2">
-<h3 id="crud-repositories"><a class="anchor" href="#crud-repositories"></a>2.3. CRUD Repositories</h3>
+<h3 id="setting-up-a-local-postgresql-database"><a class="anchor" href="#setting-up-a-local-postgresql-database"></a>2.3. Setting Up a Local PostgreSQL Database</h3>
+<div class="paragraph">
+<p>In this section, we will set up a local PostgreSQL database to store our application&#8217;s data.</p>
+</div>
+<div class="sect3">
+<h4 id="installation"><a class="anchor" href="#installation"></a>2.3.1. Installation</h4>
+<div class="paragraph">
+<p>Download PostgreSQL 14.5 from <a href="https://www.enterprisedb.com/downloads/postgres-postgresql-downloads" class="bare">https://www.enterprisedb.com/downloads/postgres-postgresql-downloads</a>. Once the download is complete, run the installer. You can stick with the default values for most screens.</p>
+</div>
+<div class="paragraph">
+<p>The default installation directory should be fine.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="data:image/png;base64," alt="PostgreSQL installation: installation directory" width="400">
+</div>
+</div>
+<div class="paragraph">
+<p>Leave every component checked.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="data:image/png;base64," alt="PostgreSQL installation: components" width="400">
+</div>
+</div>
+<div class="paragraph">
+<p>The default data directory should be fine.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="data:image/png;base64," alt="PostgreSQL installation: data directory" width="400">
+</div>
+</div>
+<div class="paragraph">
+<p>Choose a password. <em>IMPORTANT: do not forget this password. You will need it later.</em></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="data:image/png;base64," alt="PostgreSQL installation: password" width="400">
+</div>
+</div>
+<div class="paragraph">
+<p>The default port number should be fine. However, there&#8217;s no problem using a different port number in case a different app is using 5432 for some reason. Just remember your choice so that you know which port your app should connect to.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="data:image/png;base64," alt="PostgreSQL installation: port number" width="400">
+</div>
+</div>
+<div class="paragraph">
+<p>The default locale should be fine.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="data:image/png;base64," alt="PostgreSQL installation: locale" width="400">
+</div>
+</div>
+<div class="paragraph">
+<p>The summary might look something like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="data:image/png;base64," alt="PostgreSQL installation: summary" width="400">
+</div>
+</div>
+<div class="paragraph">
+<p>There&#8217;s no need for other tools, so you can skip the Stack Builder after the installation by unchecking the checkbox.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="data:image/png;base64," alt="PostgreSQL installation: skip Stack Builder" width="400">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="creating-a-database"><a class="anchor" href="#creating-a-database"></a>2.3.2. Creating a Database</h4>
+<div class="paragraph">
+<p>Once PostgreSQL is installed, you should be able to connect to your local instance by running the command <code>psql -U postgres</code> and entering your password (I hope you haven&#8217;t forgotten it already).</p>
+</div>
+<div class="paragraph">
+<p>A server can host multiple databases. Create a new database for the event registration app using the command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>CREATE DATABASE event_registration;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Check that the database exists by running the command <code>\l</code>:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="data:image/png;base64," alt="PostgreSQL create database">
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="crud-repositories"><a class="anchor" href="#crud-repositories"></a>2.4. CRUD Repositories</h3>
 <div class="paragraph">
 <p>Previously, in the <code>ca.mcgill.ecse321.eventregistration.dao.EventRegistrationRepository</code> class we used an instance of <code>javax.persistence.EntityManager</code> from Hibernate to directly implement the required operations related to saving/retrieving data to/from a database (Create, Read, Update, and Delete operations, shortly, CRUD).
 This section will introduce the Spring framework&#8217;s inbuilt support for such CRUD operations via the <code>org.springframework.data.repository.CrudRepository</code> interface and will show how to use such repositories to implement your use cases in so-called <em>service</em> classes.</p>
@@ -1221,7 +1325,7 @@ This section will introduce the Spring framework&#8217;s inbuilt support for suc
 <p>If you would like to, you can obtain a version of the project that already has the code for the backend and model classes from the previous tutorials <a href="https://github.com/McGill-ECSE321-Fall2020/eventregistration">here</a>.</p>
 </div>
 <div class="sect3">
-<h4 id="creating-a-crud-repository"><a class="anchor" href="#creating-a-crud-repository"></a>2.3.1. Creating a CRUD Repository</h4>
+<h4 id="creating-a-crud-repository"><a class="anchor" href="#creating-a-crud-repository"></a>2.4.1. Creating a CRUD Repository</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1298,18 +1402,20 @@ public interface RegistrationRepository extends CrudRepository&lt;Registration, 
 </li>
 </ol>
 </div>
-<div class="paragraph">
-<p><span class="image"><img src="data:image/png;base64," alt="Package Structure" width="400"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="data:image/png;base64," alt="Package Structure" width="400">
+</div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="testing-the-persistence-layer"><a class="anchor" href="#testing-the-persistence-layer"></a>2.4. Testing the Persistence Layer</h3>
+<h3 id="testing-the-persistence-layer"><a class="anchor" href="#testing-the-persistence-layer"></a>2.5. Testing the Persistence Layer</h3>
 <div class="paragraph">
 <p>Now we will write some tests to verify that our persistence layer is working as expected.</p>
 </div>
 <div class="sect3">
-<h4 id="writing-a-test"><a class="anchor" href="#writing-a-test"></a>2.4.1. Writing a Test</h4>
+<h4 id="writing-a-test"><a class="anchor" href="#writing-a-test"></a>2.5.1. Writing a Test</h4>
 <div class="paragraph">
 <p>The basic structure of a repository layer test is:</p>
 </div>
@@ -1444,13 +1550,13 @@ public class RegistrationRepositoryTests {
 </div>
 </div>
 <div class="sect3">
-<h4 id="running-the-tests"><a class="anchor" href="#running-the-tests"></a>2.4.2. Running the Tests</h4>
+<h4 id="running-the-tests"><a class="anchor" href="#running-the-tests"></a>2.5.2. Running the Tests</h4>
 <div class="paragraph">
 <p>To run the tests, <code>cd</code> into the <code>EventRegistration-Backend</code> folder and issue the command <code>./gradlew test</code>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="debugging-failing-tests"><a class="anchor" href="#debugging-failing-tests"></a>2.4.3. Debugging Failing Tests</h4>
+<h4 id="debugging-failing-tests"><a class="anchor" href="#debugging-failing-tests"></a>2.5.3. Debugging Failing Tests</h4>
 <div class="paragraph">
 <p>You will almost certainly encounter failing tests at some point. When this happens, it is usually helpful to read the stack trace and see if there are any helpful hints. At first you will probably find that the stack traces are short and not very informative. Add the following snippet inside the <code>test</code> task in your <code>build.gradle</code> file:</p>
 </div>
@@ -1493,7 +1599,7 @@ public class RegistrationRepositoryTests {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-10-19 19:23:53 -0400
+Last updated 2022-10-20 19:40:16 -0400
 </div>
 </div>
 </body>
