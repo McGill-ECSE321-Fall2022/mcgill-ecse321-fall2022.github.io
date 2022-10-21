@@ -1,0 +1,61 @@
+=== Setting up a Spring Boot Project
+In this section, we will use Spring Initializr to quickly generate the folder structure and some files for a new Spring Boot project.
+
+. Go to https://start.spring.io/.
+. Set the project type to Gradle.
+. Leave the Spring Boot version at the default value (2.7.5).
+. Set the names for the group, package, etc.
+. Set the Java version (17 should be fine).
+. Add the following dependencies:
+    .. web
+    .. data-jpa
+    .. postgresql
+
+image::Spring-Initializr.png[Spring Initializr]
+
+Click "GENERATE" and you should get a zip file with the following files and folders.
+
+```
+.
+├── HELP.md
+├── build.gradle
+├── gradle
+│   └── wrapper
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradlew
+├── gradlew.bat
+├── settings.gradle
+└── src
+    ├── main
+    │   ├── java
+    │   │   └── ca
+    │   │       └── mcgill
+    │   │           └── ecse321
+    │   │               └── eventregistration
+    │   │                   └── EventRegistrationApplication.java
+    │   └── resources
+    │       ├── application.properties
+    │       ├── static
+    │       └── templates
+    └── test
+        └── java
+            └── ca
+                └── mcgill
+                    └── ecse321
+                        └── eventregistration
+                            └── EventRegistrationApplicationTests.java
+```
+
+Open `application.properties` and write the following:
+```
+server.port = ${PORT:8080}
+
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.hibernate.ddl-auto=update
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/event_registration
+spring.datasource.username=postgres
+spring.datasource.password=PASSWORD
+```
+(`PASSWORD` is the password you chose while setting up the local database.)
