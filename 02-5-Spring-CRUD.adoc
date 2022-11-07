@@ -73,6 +73,6 @@ public interface RegistrationRepository extends CrudRepository<Registration, Int
 
 . Finally, create a new package in `src/main/java` and name it `ca.mcgill.ecse321.eventregistration.model`. Place all the model classes generated in the Step 2.4. By now, all the errors in all other packages should be resolved automatically. In the end, you should have the given below structure in terms of packages. +
 
-image:figs/package-structure-1.png[Package Structure,width=400]
+image::package-structure-1.png[Package Structure,width=400]
 
 

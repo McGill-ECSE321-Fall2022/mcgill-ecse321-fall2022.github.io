@@ -8,7 +8,7 @@ Conitnuous integration (CI) is at the core of Agile development. The act of writ
 
 . Select _set up a workflow yourself_ linked just below the title.
 +
-image::figs/githubactions1.png[]
+image::githubactions1.png[]
 Workflows are automated processes to run one or more jobs. Each .yml file contains a single workflow.
 
 . Modify the contents of the main.yml to have the following content:
@@ -60,10 +60,10 @@ All that's left to do is test to make sure it works. Go to local working copy of
 
 The result of workflow runs can be seen under the _Actions_ tab of the repository.
 
-image::figs/GitProj2.png[Results of workflow run]
+image::GitProj2.png[Results of workflow run]
 
 To gain more insight into a workflow run, select the workflow run from the list . Even more insight can be gleaned from independent jobs by selecting them from the list of jjobs as well.
 
-image::figs/GitProj3.png[Workflow run detail]
+image::GitProj3.png[Workflow run detail]
 
-image::figs/GitProj4.png[Job details]
+image::GitProj4.png[Job details]

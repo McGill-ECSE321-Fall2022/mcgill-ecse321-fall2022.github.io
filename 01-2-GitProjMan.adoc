@@ -4,34 +4,34 @@ One of the core components of Agile development is being able to manage the deve
 
 To create a project, click your user icon and select _Your projects_ from the dropdown menu.
 
-image::figs/GitProj4.png[]
+image::GitProj4.png[]
 
 Select the _New Project_ button to create a project. When selecting the template, select _Board_ under the *Start from scratch* section of the pop-up menu and click _Create_.
 
-image::figs/GitProj5.png[]
+image::GitProj5.png[]
 
 Name your project by selecting the default titular text and replacing it with your own porject's name. This layout is known as KanBan. By default there are three columns: *To do*, *In progress* and *Done*. More columns can be added by clicking the *+* button at the far right. 
 
-image::figs/GitProj6.png[]
+image::GitProj6.png[]
 
 Any repository can be added to a project by navigating to the _Projects_ tab of the repository, selecting the _Add project_ button and choosing the desired project from the dropdown menu. Project KanBan boards can be viewed by clicking the _Projects_ tab of the repository and selecting the appropriate Project. 
 
-image::figs/GitProj7.PNG[GitHub project cards]
+image::GitProj7.PNG[GitHub project cards]
 
 To help with better management of the project as you move through project phases, it is prudent to add Milestones. A new milestone can be created by selecting the _Issues_ tab in the repository, and selecting the _Milestones_ tab located next to the _New issue_ button. 
 
 To create a new milestone, select the _New Milestone_ button. Then, fill out the form with an appropriate name, due date and description. Once your milestone has been created, you can attach issues to the milestone and see their progress by selecting the _Milestones_ tab. Name your Milestone appropriately, denote the due date and enter a description.
 
-image::figs/GitProj11.PNG[GitHub project milestone creation button]
+image::GitProj11.PNG[GitHub project milestone creation button]
 
 With Milestones and Projects set up, issues can now be assigned to the appropriate project and Milestones. Their status should be changed so they are automatically triaged under the correct KanBan column that matches. As issues are completed and closed, don't forget to change their status. Closing issues will fill the progress bar on Milestones, while assigning the status of Done shifts issues on the KanBan board.
 
 [NOTE]
 The status of issues can only be changed after they are created.
 
-image::figs/GitProj8.PNG[GitHub project automation]
+image::GitProj8.PNG[GitHub project automation]
 
-image::figs/GitProj12.PNG[GitHub project milestone tracking]
+image::GitProj12.PNG[GitHub project milestone tracking]
 
 When creating a new issue it is imperative to be concise but also as descriptive as possible. All the issues you create should have a title, with a comment to describe the issue in detail. 
 
@@ -39,8 +39,8 @@ All issues at the time of creation should be assigned to someone. You can always
 
 For the purpose of tracking progress through the project, never ever ever delete issues. Issues should be closed and reopened as needed but never deleted. Even if a mistake was made during creation of an issue, issues can be edited by their creator.
 
-image::figs/GitProj14.PNG[GitHub project issue creation]
+image::GitProj14.PNG[GitHub project issue creation]
 
 If you've set everything up correctly. Your issue board should match your KanBan board. The KanBan board should be a snapshot of how the project is going. Nothing should be done manually here. All the manual labor of opening, moving and triaging issues should be done on the issue board, with automated results appearing on the KanBan board. 
 
-image::figs/GitProj15.PNG[GitHub project issue creation]
+image::GitProj15.PNG[GitHub project issue creation]

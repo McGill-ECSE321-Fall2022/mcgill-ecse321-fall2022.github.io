@@ -4,6 +4,7 @@ include::02-1-DomainModelling.adoc[]
 
 include::02-2-Spring-Tools-Suite.adoc[]
 
+<<<<<<< HEAD
 include::02-3-Spring-CRUD.adoc[]
 
 include::02-4-Spring-Testing.adoc[]
@@ -11,3 +12,12 @@ include::02-4-Spring-Testing.adoc[]
 include::02-5-Spring-RESTful-Services.adoc[]
 
 include::02-6-Backend-Service-Testing.adoc[]
+=======
+include::02-3-PostgreSQL-Setup.adoc[]
+
+include::02-4-Spring-Setup.adoc[]
+
+include::02-5-Spring-CRUD.adoc[]
+
+include::02-6-Persistence-Testing.adoc[]
+>>>>>>> de2b4de3ae474f3b4dd66cba84f92bc1ee9fdf03

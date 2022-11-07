@@ -1,0 +1,138 @@
+=== Testing the Persistence Layer
+Now we will write some tests to verify that our persistence layer is working as expected.
+
+==== Writing a Test
+The basic structure of a repository layer test is:
+
+. Create a new object.
+. Save the object to the database using the repository.
+. Read the object from the database using the repository.
+. Assert that the object from the database has the correct attributes.
+
+Use dependency injection (via the `@Autowired` annotation) to get an instance of your repository. Also add the `@Test` annotation to each test method.
+
+You also want to clear the database after each run so that you don't waste storage space and so that you avoid violating any unique constraints. Define a method `clearDatabase()` with the annotation `@AfterEach` that clears all relevant tables.
+
+The test class for the `PersonRepository` should be similar to the following code. The package and import statements have been omited for clarity.
+
+``` 
+@SpringBootTest
+public class PersonRepositoryTests {
+	@Autowired
+	private PersonRepository personRepository;
+	
+	@AfterEach
+	public void clearDatabase() {
+		personRepository.deleteAll();
+	}
+	
+	@Test
+	public void testPersistAndLoadPerson() {
+		// Create object
+		String name = "Anakin Skywalker";
+		Person anakin = new Person();
+		anakin.setName(name);
+		
+		// Save object
+		anakin = personRepository.save(anakin);
+		int id = anakin.getId();
+		
+		// Read object from database
+		anakin = personRepository.findPersonById(id);
+		
+		// Assert that object has correct attributes
+		assertNotNull(anakin);
+		assertEquals(name, anakin.getName());
+	}
+}
+```
+
+The test class for the `RegistrationRepository` should look something like this:
+``` 
+@SpringBootTest
+public class RegistrationRepositoryTests {
+	@Autowired
+	private PersonRepository personRepository;
+	@Autowired
+	private EventRepository eventRepository;
+	@Autowired
+	private RegistrationRepository registrationRepository;
+	
+	@AfterEach
+	public void clearDatabase() {
+		// Delete the registrations first to avoid violating not-null constraint
+		registrationRepository.deleteAll();
+		
+		personRepository.deleteAll();
+		eventRepository.deleteAll();
+	}
+	
+	@Test
+	public void testPersistAndLoadRegistration() {
+		String eventName = "Order 66";
+		Date date = Date.valueOf("2022-09-06");
+		Time startTime = Time.valueOf("16:00:00");
+		Time endTime = Time.valueOf("17:00:00");
+		Event event = new Event();
+		event.setName(eventName);
+		event.setEventDate(date);
+		event.setStartTime(startTime);
+		event.setEndTime(endTime);
+		// You need to manually save this before saving the registration: Hibernate doesn't seem to do it for you
+		eventRepository.save(event);
+		
+		String participantName = "Anakin Skywalker";
+		Person participant = new Person();
+		participant.setName(participantName);
+		participant = personRepository.save(participant);
+		int participantId = participant.getId();
+		
+		Registration registration = new Registration();
+		registration.setEvent(event);
+		registration.setParticipant(participant);
+		
+		registration = registrationRepository.save(registration);
+		int registrationId = registration.getId();
+		
+		registration = null;
+		event = null;
+		participant = null;
+		
+		registration = registrationRepository.findRegistrationById(registrationId);
+		
+		assertNotNull(registration);
+		assertEquals(registrationId, registration.getId());
+		
+		assertNotNull(registration.getEvent());
+		assertEquals(eventName, registration.getEvent().getName());
+		
+		assertNotNull(registration.getParticipant());
+		assertEquals(participantId, registration.getParticipant().getId());
+	}
+}
+
+``` 
+
+Creating a class to test the persistence of `Event` objects is left as an exercise. It is similar to the test class for `Person` objects.
+
+
+==== Running the Tests
+To run the tests, `cd` into the `EventRegistration-Backend` folder and issue the command `./gradlew test`.
+
+
+==== Debugging Failing Tests
+You will almost certainly encounter failing tests at some point. When this happens, it is usually helpful to read the stack trace and see if there are any helpful hints. At first you will probably find that the stack traces are short and not very informative. Add the following snippet inside the `test` task in your `build.gradle` file:
+```
+testLogging {
+	exceptionFormat "full"
+}
+```
+Re-run the tests and you should see much longer stack traces with helpful hints. Focus on the "Caused by:" parts.
+
+If _all_ the tests are failing (including `contextLoads()`), it means your project failed to start. This is generally because it failed to connect to the database or there is an issue with your model.
+
+===== Common Errors
+- Missing or badly-formatted data in `application.properties`. You need a database driver, the URL of an existing database, a username, and a password. The database URL is particularly easy to mess up: it needs to follow the format `jdbc:postgresql://localhost:port/database_name`.
+- Using reserved keywords for class names (e.g., `User`). This will result in a nasty SQL syntax error.
+- Incorrectly named repository methods. For example, if you have a property `eventName` and you call your repository method `findEventByName()`, Spring will complain that there's no property called `name` in the `Event` class.
+- Missing annotations. For example, if you forget an `@Id` annotation, Spring will complain that there's no unique identifier for your class.
