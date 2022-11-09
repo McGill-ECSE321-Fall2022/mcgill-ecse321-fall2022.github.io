@@ -480,21 +480,28 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#debugging-failing-tests">2.6.3. Debugging Failing Tests</a></li>
 </ul>
 </li>
-<li><a href="#trueunit-testing-persistence-in-the-backend">2.4. Unit Testing Persistence in the Backend</a></li>
-<li><a href="#truecreating-restful-web-services-in-spring">2.5. Creating RESTful Web Services in Spring</a>
+<li><a href="#creating-restful-web-services-in-spring">2.7. Creating RESTful Web Services in Spring</a>
 <ul class="sectlevel3">
-<li><a href="#trueimplementing-service-methods">2.5.1. Implementing Service Methods</a></li>
-<li><a href="#trueexposing-service-functionality-via-a-restful-api">2.5.2. Exposing Service Functionality via a RESTful API</a></li>
-<li><a href="#truespring-data-an-alternative-way-to-expose-application-data-via-a-restful-interface">2.5.3. Spring Data - an Alternative Way to Expose Application Data via a RESTful Interface</a></li>
+<li><a href="#implementing-service-methods">2.7.1. Implementing Service Methods</a></li>
+<li><a href="#exposing-service-functionality-via-a-restful-api">2.7.2. Exposing Service Functionality via a RESTful API</a></li>
+<li><a href="#spring-data-an-alternative-way-to-expose-application-data-via-a-restful-interface">2.7.3. Spring Data - an Alternative Way to Expose Application Data via a RESTful Interface</a></li>
 </ul>
 </li>
-<li><a href="#trueunit-testing-service-methods-in-backend">2.6. Unit Testing Service Methods in Backend</a>
+<li><a href="#unit-testing-service-methods-in-backend">2.8. Unit Testing Service Methods in Backend</a>
 <ul class="sectlevel3">
-<li><a href="#trueservice-unit-testing-setup-with-mockito">2.6.1. Service Unit Testing Setup with Mockito</a></li>
-<li><a href="#trueimplementing-unit-tests-for-service-class">2.6.2. Implementing Unit Tests for Service Class</a></li>
-<li><a href="#trueservice-integration-testing-with-the-curl-tool">2.6.3. Service Integration Testing with the curl Tool</a></li>
+<li><a href="#service-unit-testing-setup-with-mockito">2.8.1. Service Unit Testing Setup with Mockito</a></li>
+<li><a href="#implementing-unit-tests-for-service-class">2.8.2. Implementing Unit Tests for Service Class</a></li>
+<li><a href="#service-integration-testing-with-the-curl-tool">2.8.3. Service Integration Testing with the curl Tool</a></li>
 </ul>
 </li>
+<li><a href="#assessing-code-coverage-using-eclemma">2.9. Assessing Code Coverage using EclEmma</a>
+<ul class="sectlevel3">
+<li><a href="#getting-eclemma">2.9.1. Getting EclEmma</a></li>
+<li><a href="#example-gradle-project-for-assessing-code-coverage">2.9.2. Example Gradle Project for Assessing Code Coverage</a></li>
+<li><a href="#retrieving-code-coverage-metrics">2.9.3. Retrieving Code Coverage Metrics</a></li>
+</ul>
+</li>
+<li><a href="#event-registration-application-unit-code-coverage">2.10. Event Registration Application Unit Code Coverage</a></li>
 </ul>
 </li>
 </ul>
@@ -1711,193 +1718,12 @@ public class RegistrationRepositoryTests {
 </div>
 </div>
 <div class="sect2">
-<h3 id="trueunit-testing-persistence-in-the-backend"><a class="anchor" href="#trueunit-testing-persistence-in-the-backend"></a>2.4. Unit Testing Persistence in the Backend</h3>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>In a fresh Spring Boot project, there is already a single test class <code>EventRegistrationApplicationTests</code> in the <em>src/test/java</em> folder that looks like the following:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package ca.mcgill.ecse321.eventregistration;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-@SpringBootTest
-class EventRegistrationBackendApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
-}</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Run this test that checks if the application can successfully load by <em>right clicking on the class &#8594; Run as&#8230;&#8203; &#8594; JUnit test</em><br></p>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-You need to set the <code>SPRING_DATASOURCE_URL</code> for the test run configuration as well if you use an environment variable to set datasource URL (see earlier).
-</td>
-</tr>
-</table>
-</div>
-</li>
-<li>
-<p>Add a new test class <code>ca.mcgill.ecse321.eventregistration.dao.TestEventRegistrationPersistence</code> and implement tests for the persistence</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package ca.mcgill.ecse321.eventregistration.dao;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.sql.Date;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.Month;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import ca.mcgill.ecse321.eventregistration.model.Event;
-import ca.mcgill.ecse321.eventregistration.model.Person;
-import ca.mcgill.ecse321.eventregistration.model.Registration;
-
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-public class TestEventRegistrationPersistence {
-
-	@Autowired
-	private PersonRepository personRepository;
-	@Autowired
-	private EventRepository eventRepository;
-	@Autowired
-	private RegistrationRepository registrationRepository;
-
-	@AfterEach
-	public void clearDatabase() {
-		// Fisrt, we clear registrations to avoid exceptions due to inconsistencies
-		registrationRepository.deleteAll();
-		// Then we can clear the other tables
-		personRepository.deleteAll();
-		eventRepository.deleteAll();
-	}
-
-	@Test
-	public void testPersistAndLoadPerson() {
-		String name = "TestPerson";
-		// First example for object save/load
-		Person person = new Person();
-		// First example for attribute save/load
-		person.setName(name);
-		personRepository.save(person);
-
-		person = null;
-
-		person = personRepository.findPersonByName(name);
-		assertNotNull(person);
-		assertEquals(name, person.getName());
-	}
-
-	@Test
-	public void testPersistAndLoadEvent() {
-		String name = "ECSE321 Tutorial";
-		Date date = java.sql.Date.valueOf(LocalDate.of(2020, Month.JANUARY, 31));
-		Time startTime = java.sql.Time.valueOf(LocalTime.of(11, 35));
-		Time endTime = java.sql.Time.valueOf(LocalTime.of(13, 25));
-		Event event = new Event();
-		event.setName(name);
-		event.setDate(date);
-		event.setStartTime(startTime);
-		event.setEndTime(endTime);
-		eventRepository.save(event);
-
-		event = null;
-
-		event = eventRepository.findEventByName(name);
-
-		assertNotNull(event);
-		assertEquals(name, event.getName());
-		assertEquals(date, event.getDate());
-		assertEquals(startTime, event.getStartTime());
-		assertEquals(endTime, event.getEndTime());
-	}
-
-	@Test
-	public void testPersistAndLoadRegistration() {
-		String personName = "TestPerson";
-		Person person = new Person();
-		person.setName(personName);
-		personRepository.save(person);
-
-		String eventName = "ECSE321 Tutorial";
-		Date date = java.sql.Date.valueOf(LocalDate.of(2020, Month.JANUARY, 31));
-		Time startTime = java.sql.Time.valueOf(LocalTime.of(11, 35));
-		Time endTime = java.sql.Time.valueOf(LocalTime.of(13, 25));
-		Event event = new Event();
-		event.setName(eventName);
-		event.setDate(date);
-		event.setStartTime(startTime);
-		event.setEndTime(endTime);
-		eventRepository.save(event);
-
-		Registration reg = new Registration();
-		int regId = 1;
-		// First example for reference save/load
-		reg.setId(regId);
-		reg.setPerson(person);
-		reg.setEvent(event);
-		registrationRepository.save(reg);
-
-		reg = null;
-
-		reg = registrationRepository.findByPersonAndEvent(person, event);
-		assertNotNull(reg);
-		assertEquals(regId, reg.getId());
-		// Comparing by keys
-		assertEquals(person.getName(), reg.getPerson().getName());
-		assertEquals(event.getName(), reg.getEvent().getName());
-	}
-
-}</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>In the end, you should have the given below structure in terms of packages.<br></p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="figs/package-structure-2.png" alt="Package Structure" width="400"></span></p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Run this test suite by <em>right clicking on the class &#8594; Run as&#8230;&#8203; &#8594; JUnit test</em>. Again, don&#8217;t forget to set the <code>SPRING_DATASOURCE_URL</code> value for the run configuration.</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="truecreating-restful-web-services-in-spring"><a class="anchor" href="#truecreating-restful-web-services-in-spring"></a>2.5. Creating RESTful Web Services in Spring</h3>
+<h3 id="creating-restful-web-services-in-spring"><a class="anchor" href="#creating-restful-web-services-in-spring"></a>2.7. Creating RESTful Web Services in Spring</h3>
 <div class="paragraph">
 <p>The following steps provide guidance on (1) implementing business logic that implements the required functionality (classes annotated with <code>@Service</code>) and (2) exposing them using a REST API in the context of the Event Registration Application (classes annotated with <code>@RestController</code>).</p>
 </div>
 <div class="sect3">
-<h4 id="trueimplementing-service-methods"><a class="anchor" href="#trueimplementing-service-methods"></a>2.5.1. Implementing Service Methods</h4>
+<h4 id="implementing-service-methods"><a class="anchor" href="#implementing-service-methods"></a>2.7.1. Implementing Service Methods</h4>
 <div class="paragraph">
 <p>We implement use-cases in <em>service classes</em> by using the DAOs for each data type of the domain model.</p>
 </div>
@@ -1910,7 +1736,7 @@ public class TestEventRegistrationPersistence {
 <p>In this package, create the <code>EventRegistrationService</code> class as shown below</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package ca.mcgill.ecse321.eventregistration.service;
+<pre class="highlight"><code class="language-java" data-lang="java">package ca.mcgill.ecse321.eventregistration.service;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -2021,16 +1847,16 @@ public class EventRegistrationService {
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueexposing-service-functionality-via-a-restful-api"><a class="anchor" href="#trueexposing-service-functionality-via-a-restful-api"></a>2.5.2. Exposing Service Functionality via a RESTful API</h4>
+<h4 id="exposing-service-functionality-via-a-restful-api"><a class="anchor" href="#exposing-service-functionality-via-a-restful-api"></a>2.7.2. Exposing Service Functionality via a RESTful API</h4>
 <div class="sect4">
-<h5 id="truebuilding-a-restful-web-service-using-a-controller-and-data-transfer-objects"><a class="anchor" href="#truebuilding-a-restful-web-service-using-a-controller-and-data-transfer-objects"></a>Building a RESTful Web Service Using a Controller and Data Transfer Objects</h5>
+<h5 id="building-a-restful-web-service-using-a-controller-and-data-transfer-objects"><a class="anchor" href="#building-a-restful-web-service-using-a-controller-and-data-transfer-objects"></a>Building a RESTful Web Service Using a Controller and Data Transfer Objects</h5>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>We first create a new package <code>ca.mcgill.ecse321.eventregistration.controller</code> in EventRegistration-Backend and then create <code>EventRegistrationRestController</code> class inside it. We add the annotation <code>@RestController</code> to the controller class so that HTTP requests can be dispacthed to <code>EventRegistrationRestController</code> class. In addition, we enabled the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">Cross-Origin Resource Sharing</a> for any domain using the <code>@CrossOrigin</code> annotation on the REST controller class.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package ca.mcgill.ecse321.eventregistration.controller;
+<pre class="highlight"><code class="language-java" data-lang="java">package ca.mcgill.ecse321.eventregistration.controller;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
@@ -2052,7 +1878,7 @@ public class EventRegistrationRestController {
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-important" title="Important"></i>
+<div class="title">Important</div>
 </td>
 <td class="content">
 Data Access Object (DAO) != Data Transfer Object (DTO). These two are completely separate concepts, as you will also see below. These two should not be confused with each other.
@@ -2062,7 +1888,7 @@ Data Access Object (DAO) != Data Transfer Object (DTO). These two are completely
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package ca.mcgill.ecse321.eventregistration.dto;
+<pre class="highlight"><code class="language-java" data-lang="java">package ca.mcgill.ecse321.eventregistration.dto;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -2112,7 +1938,7 @@ public class EventDto {
 <p>Next, we create <code>PersonDto</code> Java class.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package ca.mcgill.ecse321.eventregistration.dto;
+<pre class="highlight"><code class="language-java" data-lang="java">package ca.mcgill.ecse321.eventregistration.dto;
 
 import java.util.Collections;
 import java.util.List;
@@ -2155,7 +1981,7 @@ public class PersonDto {
 <p>Finally, we create <code>RegistrationDto</code> Java class.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package ca.mcgill.ecse321.eventregistration.dto;
+<pre class="highlight"><code class="language-java" data-lang="java">package ca.mcgill.ecse321.eventregistration.dto;
 
 public class RegistrationDto {
 
@@ -2195,17 +2021,17 @@ public class RegistrationDto {
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
+<div class="title">Tip</div>
 </td>
 <td class="content">
-In Spring Tools Suite (a.k.a. Eclipse), you can organize Java imports with kbd:[Ctrl+Shift+o]
+In Spring Tools Suite (a.k.a. Eclipse), you can organize Java imports with <span class="keyseq"><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>o</kbd></span>
 </td>
 </tr>
 </table>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@GetMapping(value = { "/persons", "/persons/" })
+<pre class="highlight"><code class="language-java" data-lang="java">@GetMapping(value = { "/persons", "/persons/" })
 public List&lt;PersonDto&gt; getAllPersons() {
 	return service.getAllPersons().stream().map(p -&gt; convertToDto(p)).collect(Collectors.toList());
 }
@@ -2228,7 +2054,7 @@ public PersonDto createPerson(@PathVariable("name") String name) throws IllegalA
 <p>You can add other methods similarly with appropriate mappings.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@PostMapping(value = { "/events/{name}", "/events/{name}/" })
+<pre class="highlight"><code class="language-java" data-lang="java">@PostMapping(value = { "/events/{name}", "/events/{name}/" })
 public EventDto createEvent(@PathVariable("name") String name, @RequestParam Date date,
 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME, pattern = "HH:mm") LocalTime startTime,
 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME, pattern = "HH:mm") LocalTime endTime)
@@ -2315,7 +2141,7 @@ private List&lt;EventDto&gt; createEventDtosForPerson(Person p) {
 </div>
 </div>
 <div class="sect4">
-<h5 id="truetrying-smoke-testing-of-the-application"><a class="anchor" href="#truetrying-smoke-testing-of-the-application"></a>Trying (Smoke Testing of) the Application</h5>
+<h5 id="trying-smoke-testing-of-the-application"><a class="anchor" href="#trying-smoke-testing-of-the-application"></a>Trying (Smoke Testing of) the Application</h5>
 <div class="paragraph">
 <p>We can see if our application is able to respond to HTTP requests using, e.g., the Postman (Chrome), RESTClient browser plugin (Firefox), Advanced Rest Client (Firefox), or the command line tool called <code>curl</code>.</p>
 </div>
@@ -2323,13 +2149,13 @@ private List&lt;EventDto&gt; createEventDtosForPerson(Person p) {
 <p>Once you launch the client, you can specify the path and select the method as shown in the below figures.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="figs/RestClient1.png" alt="Post method on REST Client" width="1000"></span></p>
+<p><span class="image"><img src="data:image/png;base64," alt="Post method on REST Client" width="1000"></span></p>
 </div>
 <div class="paragraph">
 <p>Once we use POST, the record is persisted and then we can use the GET method to retrive the same.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="figs/RestClient2.png" alt="GET method on REST Client" width="1000"></span></p>
+<p><span class="image"><img src="data:image/png;base64," alt="GET method on REST Client" width="1000"></span></p>
 </div>
 <div class="paragraph">
 <p>Similary, we can try other methods as well.</p>
@@ -2337,7 +2163,7 @@ private List&lt;EventDto&gt; createEventDtosForPerson(Person p) {
 </div>
 </div>
 <div class="sect3">
-<h4 id="truespring-data-an-alternative-way-to-expose-application-data-via-a-restful-interface"><a class="anchor" href="#truespring-data-an-alternative-way-to-expose-application-data-via-a-restful-interface"></a>2.5.3. Spring Data - an Alternative Way to Expose Application Data via a RESTful Interface</h4>
+<h4 id="spring-data-an-alternative-way-to-expose-application-data-via-a-restful-interface"><a class="anchor" href="#spring-data-an-alternative-way-to-expose-application-data-via-a-restful-interface"></a>2.7.3. Spring Data - an Alternative Way to Expose Application Data via a RESTful Interface</h4>
 <div class="paragraph">
 <p>The advantage of using <em>Spring Data Rest</em> is that it can remove a lot of boilerplate compared to the previous sections. Spring would automatically create endpoints for classes, such as <code>/events</code> and <code>/person</code> in the Event Registration example. In this case, implementing proper error handling may require some extra effort (not discussed here).</p>
 </div>
@@ -2345,7 +2171,7 @@ private List&lt;EventDto&gt; createEventDtosForPerson(Person p) {
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<div class="title">Note</div>
 </td>
 <td class="content">
 This section presents an alternative way of exposing your data via a REST API. <strong>You do not have to use this method</strong> if you do not think that it fits your design.
@@ -2359,7 +2185,7 @@ This section presents an alternative way of exposing your data via a REST API. <
 <p>Add the dependency 'spring-boot-starter-data-rest' in <em>build.gradle</em> file of your backend. It is required to expose Spring Data repositories over REST using Spring Data REST. Update your <code>dependencies</code> section as shown below:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="gradle" class="language-gradle hljs">dependencies {
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
@@ -2379,7 +2205,7 @@ This section presents an alternative way of exposing your data via a REST API. <
 <p>Next, we can go to repository interfaces and add a <code>@RepositoryRestResource</code> annotaion.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// REST endpoint specification
+<pre class="highlight"><code class="language-java" data-lang="java">// REST endpoint specification
 @RepositoryRestResource(collectionResourceRel = "person_data", path = "person_data")
 public interface PersonRepository extends CrudRepository&lt;Person, String&gt;{
 
@@ -2392,7 +2218,7 @@ public interface PersonRepository extends CrudRepository&lt;Person, String&gt;{
 <li>
 <p>Finally, we can access this REST API (<code><a href="http://localhost:8080/person_data" class="bare">http://localhost:8080/person_data</a></code>) in the browser or REST Client and will receive the JSON as shown below.</p>
 <div class="paragraph">
-<p><span class="image"><img src="figs/RestClient3.png" alt="Post method on REST Client" width="1000"></span></p>
+<p><span class="image"><img src="data:image/png;base64," alt="Post method on REST Client" width="1000"></span></p>
 </div>
 </li>
 <li>
@@ -2406,9 +2232,9 @@ public interface PersonRepository extends CrudRepository&lt;Person, String&gt;{
 </div>
 </div>
 <div class="sect2">
-<h3 id="trueunit-testing-service-methods-in-backend"><a class="anchor" href="#trueunit-testing-service-methods-in-backend"></a>2.6. Unit Testing Service Methods in Backend</h3>
+<h3 id="unit-testing-service-methods-in-backend"><a class="anchor" href="#unit-testing-service-methods-in-backend"></a>2.8. Unit Testing Service Methods in Backend</h3>
 <div class="sect3">
-<h4 id="trueservice-unit-testing-setup-with-mockito"><a class="anchor" href="#trueservice-unit-testing-setup-with-mockito"></a>2.6.1. Service Unit Testing Setup with Mockito</h4>
+<h4 id="service-unit-testing-setup-with-mockito"><a class="anchor" href="#service-unit-testing-setup-with-mockito"></a>2.8.1. Service Unit Testing Setup with Mockito</h4>
 <div class="paragraph">
 <p>We need extra dependencies to support testing of the business methods in isolation.</p>
 </div>
@@ -2418,7 +2244,7 @@ public interface PersonRepository extends CrudRepository&lt;Person, String&gt;{
 <p>Add the following dependencies to the project:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="gradle" class="language-gradle hljs">testImplementation 'org.mockito:mockito-core:2.+'
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">testImplementation 'org.mockito:mockito-core:2.+'
 testImplementation 'org.mockito:mockito-junit-jupiter:2.18.3'
 
 testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.3.1'</code></pre>
@@ -2428,7 +2254,7 @@ testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.3.1'</code></pre>
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
+<div class="title">Tip</div>
 </td>
 <td class="content">
 Finding configuration settings for your Gradle/Maven projects is very simple by searaching for them on MVNRepository: <a href="https://mvnrepository.com/" class="bare">https://mvnrepository.com/</a>
@@ -2441,7 +2267,7 @@ Finding configuration settings for your Gradle/Maven projects is very simple by 
 <p>If you also would like to run your project from Eclipse, add an additional dependency:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="gradle" class="language-gradle hljs">testImplementation 'org.junit.platform:junit-platform-launcher:1.4.1'</code></pre>
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">testImplementation 'org.junit.platform:junit-platform-launcher:1.4.1'</code></pre>
 </div>
 </div>
 </li>
@@ -2449,7 +2275,7 @@ Finding configuration settings for your Gradle/Maven projects is very simple by 
 <p>Create a test class (in case you don&#8217;t already have one) <code>TestEventRegistrationService</code> in the corresponding package under <code>src/test/java</code>:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package ca.mcgill.ecse321.eventregistration.service;
+<pre class="highlight"><code class="language-java" data-lang="java">package ca.mcgill.ecse321.eventregistration.service;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -2469,14 +2295,14 @@ public class TestEventRegistrationService {
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueimplementing-unit-tests-for-service-class"><a class="anchor" href="#trueimplementing-unit-tests-for-service-class"></a>2.6.2. Implementing Unit Tests for Service Class</h4>
+<h4 id="implementing-unit-tests-for-service-class"><a class="anchor" href="#implementing-unit-tests-for-service-class"></a>2.8.2. Implementing Unit Tests for Service Class</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>Add the following static imports for methods:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import static org.junit.jupiter.api.Assertions.assertEquals;
+<pre class="highlight"><code class="language-java" data-lang="java">import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -2490,7 +2316,7 @@ import static org.mockito.Mockito.when;</code></pre>
 <p>Add the following imports to the test class:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import java.sql.Date;
+<pre class="highlight"><code class="language-java" data-lang="java">import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -2518,7 +2344,7 @@ import ca.mcgill.ecse321.eventregistration.model.Registration;</code></pre>
 <p>Create the DAO mock for person</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Mock
+<pre class="highlight"><code class="language-java" data-lang="java">@Mock
 private PersonRepository personDao;
 
 @InjectMocks
@@ -2551,7 +2377,7 @@ public void setMockOutput() {
 <p>Update the implementation (i.e., replace the current service method codes with the ones provided below) of the following methods with input validation in the <code>EventRegistrationService</code> service class to make the tests pass (we are rapid simulating a TDD process&#8201;&#8212;&#8201;TDD stands for <em>Test-Driven Development</em>)</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Transactional
+<pre class="highlight"><code class="language-java" data-lang="java">@Transactional
 public Person createPerson(String name) {
 	if (name == null || name.trim().length() == 0) {
 		throw new IllegalArgumentException("Person name cannot be empty!");
@@ -2666,7 +2492,7 @@ public List&lt;Event&gt; getEventsAttendedByPerson(Person person) {
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueservice-integration-testing-with-the-curl-tool"><a class="anchor" href="#trueservice-integration-testing-with-the-curl-tool"></a>2.6.3. Service Integration Testing with the curl Tool</h4>
+<h4 id="service-integration-testing-with-the-curl-tool"><a class="anchor" href="#service-integration-testing-with-the-curl-tool"></a>2.8.3. Service Integration Testing with the curl Tool</h4>
 <div class="paragraph">
 <p>The command line utility <a href="https://curl.haxx.se/"><code>curl</code></a> is one way to automate integration testing for the REST API of your application. This brief section shows a basic examples for using it for testing with persons.</p>
 </div>
@@ -2685,7 +2511,7 @@ public List&lt;Event&gt; getEventsAttendedByPerson(Person person) {
 <p>Use the <code>-X</code> switch to specify the used HTTP method:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl -s -X POST http://localhost:8080/persons/testperson1
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ curl -s -X POST http://localhost:8080/persons/testperson1
 {"name":"testperson1","events":[]}
 $ curl -s -X POST http://localhost:8080/persons/testperson2
 {"name":"testperson2","events":[]}
@@ -2698,7 +2524,7 @@ $ curl -s -X http://localhost:8080/persons
 <p>To verify that a given content is in the returned values, you can use the standard output result of the command and filter it, for example, using <code>grep</code></p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl -s -X GET  http://localhost:8080/persons | grep -o testperson1
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ curl -s -X GET  http://localhost:8080/persons | grep -o testperson1
 testperson1</code></pre>
 </div>
 </div>
@@ -2710,16 +2536,215 @@ testperson1</code></pre>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="assessing-code-coverage-using-eclemma"><a class="anchor" href="#assessing-code-coverage-using-eclemma"></a>2.9. Assessing Code Coverage using EclEmma</h3>
+<div class="paragraph">
+<p>This tutorial covers the basics of EclEmma and retrieves code coverage metrics using it.</p>
+</div>
+<div class="sect3">
+<h4 id="getting-eclemma"><a class="anchor" href="#getting-eclemma"></a>2.9.1. Getting EclEmma</h4>
+<div class="paragraph">
+<p>Install EclEmma as a plugin in your Eclipse IDE from <a href="https://www.eclemma.org/installation.html">here</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The Spring Tools Suite (STS) version of Eclipse already ships with the plugin pre-installed, so you can skip this step if you are using STS.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="example-gradle-project-for-assessing-code-coverage"><a class="anchor" href="#example-gradle-project-for-assessing-code-coverage"></a>2.9.2. Example Gradle Project for Assessing Code Coverage</h4>
+<div class="paragraph">
+<p>We will create a Gradle project from scratch and be testing a simple method <em>returnAverage(int[], int, int, int)</em> .</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a new Gradle project in Eclipse by clicking on <em>File</em> &gt; <em>New</em> &gt; <em>Other</em><br>
+<span class="image"><img src="data:image/png;base64," alt="New Project"></span></p>
+</li>
+<li>
+<p>Under <em>Gradle</em>, choose Gradle Project<br>
+<span class="image"><img src="data:image/png;base64," alt="New Gradle Project"></span></p>
+</li>
+<li>
+<p>Click on <em>Next</em>, then name your project <em>tutorial7</em>, click on <em>Finish</em><br>
+<span class="image"><img src="data:image/png;base64," alt="Project Name"></span><br></p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The project may take some time to be created.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Create a new package instead of the default ones for both the source and test folders (e.g <code>ca.mcgill.ecse321.tutorial7</code>) and move the default generated classes (<code>Library</code> and <code>LibraryTest</code>) to this package.<br>
+<span class="image"><img src="data:image/png;base64," alt="Create Packages"></span></p>
+</li>
+<li>
+<p>Change the code in the <code>Library</code> class</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package ca.mcgill.ecse321.tutorial7;
+
+public class Library {
+
+	public static double returnAverage(int value[], int arraySize, int MIN, int MAX) {
+		int index, ti, tv, sum;
+		double average;
+		index = 0;
+		ti = 0;
+		tv = 0;
+		sum = 0;
+		while (ti &lt; arraySize &amp;&amp; value[index] != -999) {
+			ti++;
+			if (value[index] &gt;= MIN &amp;&amp; value[index] &lt;= MAX) {
+				tv++;
+				sum += value[index];
+			}
+			index++;
+		}
+		if (tv &gt; 0)
+			average = (double) sum / tv;
+		else
+			average = (double) -999;
+		return average;
+	}
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Change the code in the <code>LibraryTest</code> class</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package ca.mcgill.ecse321.tutorial7;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
+public class LibraryTest {
+
+	@Test
+	public void allBranchCoverageMinimumTestCaseForReturnAverageTest1() {
+		int[] value = {5, 25, 15, -999};
+		int AS = 4;
+		int min = 10;
+		int max = 20;
+		double average = Library.returnAverage(value, AS, min, max);
+		assertEquals(15, average, 0.1);
+	}
+
+	@Test
+	public void allBranchCoverageMinimumTestCaseForReturnAverageTest2() {
+		int[] value = {};
+		int AS = 0;
+		int min = 10;
+		int max = 20;
+		double average = Library.returnAverage(value, AS, min, max);
+		assertEquals(-999.0, average, 0.1);
+	}
+}</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="retrieving-code-coverage-metrics"><a class="anchor" href="#retrieving-code-coverage-metrics"></a>2.9.3. Retrieving Code Coverage Metrics</h4>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+We can straightforwardly manage code coverage using JaCoCo inside Eclipse with no configuration if we are using EclEmma Eclipse plugin.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Run the Test in coverage mode using Eclemma. Click on <em>LibraryTest</em>, <em>Coverage As</em>, <em>1 JUnit Test</em><br>
+<span class="image"><img src="data:image/png;base64," alt="Full Branch Coverage"></span></p>
+</li>
+<li>
+<p>Verify that we have 100% branch coverage.<br>
+<span class="image"><img src="data:image/png;base64," alt="Full Branch Coverage-Eclemma"></span></p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="event-registration-application-unit-code-coverage"><a class="anchor" href="#event-registration-application-unit-code-coverage"></a>2.10. Event Registration Application Unit Code Coverage</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Check the code coverage of the service unit tests in the EventRegistration-Backend project.</p>
+</li>
+<li>
+<p>If you want to run the tests using gradle, use the <em>Jacoco plugin</em> with plugin ID <code>jacoco</code>. After adding it to the <em>build.gradle</em> file, the plugin section should look like the one below:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">plugins {
+	id 'org.springframework.boot' version '2.2.4.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+	id 'jacoco'
+}</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>This new plugin gives us the <code>jacocoTestReport</code> task that can generate html reports. Try executing this task from the terminal and see the generated HTML files under <em>build/reports/jacoco/test/html/</em>!</p>
+</li>
+<li>
+<p>If you wish, you can check enforce a certain treshold on the test cases with this Jacoco plugin. With the definition below, the <code>./gradlew jacocoTestCoverageVerification</code> task will fail if code coverage is below 60%.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			limit {
+				minimum = 0.6
+			}
+		}
+	}
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-<<<<<<< HEAD
-Last updated 2022-11-06 22:45:08 -0500
-=======
-Last updated 2022-10-20 20:24:37 -0400
->>>>>>> de2b4de3ae474f3b4dd66cba84f92bc1ee9fdf03
+Last updated 2022-11-09 11:14:03 -0500
 </div>
 </div>
 </body>
