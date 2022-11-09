@@ -1,4 +1,4 @@
-=== Unit Testing Service Methods in Backend
+=== Testing Service Methods in Backend
 
 ==== Service Unit Testing Setup with Mockito
 
@@ -258,3 +258,115 @@ $ curl -s -X GET  http://localhost:8080/persons | grep -o testperson1
 testperson1
 ```
 . A way to get started with implementing a Gradle task for integration testing (expected in the second deliverable) is to call a command line tool (e.g., `curl`) from Gradle. Gradle documentation has a section on how to achieve this: https://docs.gradle.org/5.6.2/dsl/org.gradle.api.tasks.Exec.html#org.gradle.api.tasks.Exec
+
+==== Service Integration Testing with Spring's `TestRestTemplate`
+
+As an alternative to the `curl` tool, you can test your application directly in your Spring project using the `TestRestTemplate`. This has a few benefits. For example, you can use built-in assertion methods to more precisely specify your test success conditions and you don't need any extra steps to integrate these tests into your build system: running `./gradlew clean test` will automatically run the integration tests. It's also nice to be able to see the code coverage for your integration tests, even if it's not required for your project.
+
+. Create a new integration testing class and annotate it with `@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)`. This tells Spring to launch the app with a random port (to avoid conflicts if you are already running the app separately).
+. Autowire a `TestRestTemplate`. This will act as your API client (like the Advanced REST Client, Postman, or `curl`).
+. Autowire any repositories you need to clear the database before your tests.
+. You can send POST requests to your API using `TestRestTemplate.postForEntity()`, send GET requests using `TestRestTemplate.getForEntity()`, and so on. You'll need to specify:
+    - A URL (which does not need to include the base URL, since the autowired `TestRestTemplate` already knows where your app is running)
+    - The type of object you expect to receive in response. You may find it helpful to create a new package-private DTO class to represent this response
+    - For requests that include a body (e.g., POST), the body
+
+A simple suite of integration tests for the `Person`-related endpoints might look like this:
+```
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import ca.mcgill.ecse321.eventregistration.repository.PersonRepository;
+
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+public class PersonIntegrationTests {
+
+	@Autowired
+	private TestRestTemplate client;
+	
+	@Autowired
+	private PersonRepository personRepo;
+	
+	@BeforeEach
+	@AfterEach
+	public void clearDatabase() {
+		personRepo.deleteAll();
+	}
+	
+	@Test
+	public void testCreateAndGetPerson() {
+		int id = testCreatePerson();
+		testGetPerson(id);
+	}
+	
+	private int testCreatePerson() {
+		ResponseEntity<PersonDto> response = client.postForEntity("/person", new PersonDto("Obi-Wan Kenobi"), PersonDto.class);
+		
+		assertNotNull(response);
+		assertEquals(HttpStatus.CREATED, response.getStatusCode(), "Response has correct status");
+		assertNotNull(response.getBody(), "Response has body");
+		assertEquals("Obi-Wan Kenobi", response.getBody().getName(), "Response has correct name");
+		assertTrue(response.getBody().getId() > 0, "Response has valid ID");
+		
+		return response.getBody().getId();
+	}
+	
+	private void testGetPerson(int id) {
+		ResponseEntity<PersonDto> response = client.getForEntity("/person/" + id, PersonDto.class);
+		
+		assertNotNull(response);
+		assertEquals(HttpStatus.OK, response.getStatusCode(), "Response has correct status");
+		assertNotNull(response.getBody(), "Response has body");
+		assertEquals("Obi-Wan Kenobi", response.getBody().getName(), "Response has correct name");
+		assertTrue(response.getBody().getId() == id, "Response has correct ID");
+	}
+	
+	@Test
+	public void testCreateInvalidPerson() {
+		ResponseEntity<String> response = client.postForEntity("/person", new PersonDto("   "), String.class);
+		
+		assertNotNull(response);
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode(), "Response has correct status");
+	}
+	
+	@Test
+	public void testGetInvalidPerson() {
+		ResponseEntity<String> response = client.getForEntity("/person/" + Integer.MAX_VALUE, String.class);
+		
+		assertNotNull(response);
+		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(), "Response has correct status");
+		assertEquals("Person not found.", response.getBody(), "Response has correct error message");
+	}
+}
+
+class PersonDto {
+	private int id;
+	private String name;
+	
+	// Need default constructor so that Jackson can instantiate the object
+	public PersonDto() {}
+	
+	public PersonDto(String name) {
+		this.name = name;
+	}
+	
+	public int getId() {
+		return this.id;
+	}
+	
+	public String getName() {
+		return this.name;
+	}
+}
+```

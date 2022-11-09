@@ -487,11 +487,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#spring-data-an-alternative-way-to-expose-application-data-via-a-restful-interface">2.7.3. Spring Data - an Alternative Way to Expose Application Data via a RESTful Interface</a></li>
 </ul>
 </li>
-<li><a href="#unit-testing-service-methods-in-backend">2.8. Unit Testing Service Methods in Backend</a>
+<li><a href="#testing-service-methods-in-backend">2.8. Testing Service Methods in Backend</a>
 <ul class="sectlevel3">
 <li><a href="#service-unit-testing-setup-with-mockito">2.8.1. Service Unit Testing Setup with Mockito</a></li>
 <li><a href="#implementing-unit-tests-for-service-class">2.8.2. Implementing Unit Tests for Service Class</a></li>
 <li><a href="#service-integration-testing-with-the-curl-tool">2.8.3. Service Integration Testing with the curl Tool</a></li>
+<li><a href="#service-integration-testing-with-springs-testresttemplate">2.8.4. Service Integration Testing with Spring&#8217;s <code>TestRestTemplate</code></a></li>
 </ul>
 </li>
 <li><a href="#assessing-code-coverage-using-eclemma">2.9. Assessing Code Coverage using EclEmma</a>
@@ -2232,7 +2233,7 @@ public interface PersonRepository extends CrudRepository&lt;Person, String&gt;{
 </div>
 </div>
 <div class="sect2">
-<h3 id="unit-testing-service-methods-in-backend"><a class="anchor" href="#unit-testing-service-methods-in-backend"></a>2.8. Unit Testing Service Methods in Backend</h3>
+<h3 id="testing-service-methods-in-backend"><a class="anchor" href="#testing-service-methods-in-backend"></a>2.8. Testing Service Methods in Backend</h3>
 <div class="sect3">
 <h4 id="service-unit-testing-setup-with-mockito"><a class="anchor" href="#service-unit-testing-setup-with-mockito"></a>2.8.1. Service Unit Testing Setup with Mockito</h4>
 <div class="paragraph">
@@ -2535,6 +2536,144 @@ testperson1</code></pre>
 </ol>
 </div>
 </div>
+<div class="sect3">
+<h4 id="service-integration-testing-with-springs-testresttemplate"><a class="anchor" href="#service-integration-testing-with-springs-testresttemplate"></a>2.8.4. Service Integration Testing with Spring&#8217;s <code>TestRestTemplate</code></h4>
+<div class="paragraph">
+<p>As an alternative to the <code>curl</code> tool, you can test your application directly in your Spring project using the <code>TestRestTemplate</code>. This has a few benefits. For example, you can use built-in assertion methods to more precisely specify your test success conditions and you don&#8217;t need any extra steps to integrate these tests into your build system: running <code>./gradlew clean test</code> will automatically run the integration tests. It&#8217;s also nice to be able to see the code coverage for your integration tests, even if it&#8217;s not required for your project.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a new integration testing class and annotate it with <code>@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)</code>. This tells Spring to launch the app with a random port (to avoid conflicts if you are already running the app separately).</p>
+</li>
+<li>
+<p>Autowire a <code>TestRestTemplate</code>. This will act as your API client (like the Advanced REST Client, Postman, or <code>curl</code>).</p>
+</li>
+<li>
+<p>Autowire any repositories you need to clear the database before your tests.</p>
+</li>
+<li>
+<p>You can send POST requests to your API using <code>TestRestTemplate.postForEntity()</code>, send GET requests using <code>TestRestTemplate.getForEntity()</code>, and so on. You&#8217;ll need to specify:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>A URL (which does not need to include the base URL, since the autowired <code>TestRestTemplate</code> already knows where your app is running)</p>
+</li>
+<li>
+<p>The type of object you expect to receive in response. You may find it helpful to create a new package-private DTO class to represent this response</p>
+</li>
+<li>
+<p>For requests that include a body (e.g., POST), the body</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>A simple suite of integration tests for the <code>Person</code>-related endpoints might look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import ca.mcgill.ecse321.eventregistration.repository.PersonRepository;
+
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+public class PersonIntegrationTests {
+
+	@Autowired
+	private TestRestTemplate client;
+
+	@Autowired
+	private PersonRepository personRepo;
+
+	@BeforeEach
+	@AfterEach
+	public void clearDatabase() {
+		personRepo.deleteAll();
+	}
+
+	@Test
+	public void testCreateAndGetPerson() {
+		int id = testCreatePerson();
+		testGetPerson(id);
+	}
+
+	private int testCreatePerson() {
+		ResponseEntity&lt;PersonDto&gt; response = client.postForEntity("/person", new PersonDto("Obi-Wan Kenobi"), PersonDto.class);
+
+		assertNotNull(response);
+		assertEquals(HttpStatus.CREATED, response.getStatusCode(), "Response has correct status");
+		assertNotNull(response.getBody(), "Response has body");
+		assertEquals("Obi-Wan Kenobi", response.getBody().getName(), "Response has correct name");
+		assertTrue(response.getBody().getId() &gt; 0, "Response has valid ID");
+
+		return response.getBody().getId();
+	}
+
+	private void testGetPerson(int id) {
+		ResponseEntity&lt;PersonDto&gt; response = client.getForEntity("/person/" + id, PersonDto.class);
+
+		assertNotNull(response);
+		assertEquals(HttpStatus.OK, response.getStatusCode(), "Response has correct status");
+		assertNotNull(response.getBody(), "Response has body");
+		assertEquals("Obi-Wan Kenobi", response.getBody().getName(), "Response has correct name");
+		assertTrue(response.getBody().getId() == id, "Response has correct ID");
+	}
+
+	@Test
+	public void testCreateInvalidPerson() {
+		ResponseEntity&lt;String&gt; response = client.postForEntity("/person", new PersonDto("   "), String.class);
+
+		assertNotNull(response);
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode(), "Response has correct status");
+	}
+
+	@Test
+	public void testGetInvalidPerson() {
+		ResponseEntity&lt;String&gt; response = client.getForEntity("/person/" + Integer.MAX_VALUE, String.class);
+
+		assertNotNull(response);
+		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(), "Response has correct status");
+		assertEquals("Person not found.", response.getBody(), "Response has correct error message");
+	}
+}
+
+class PersonDto {
+	private int id;
+	private String name;
+
+	// Need default constructor so that Jackson can instantiate the object
+	public PersonDto() {}
+
+	public PersonDto(String name) {
+		this.name = name;
+	}
+
+	public int getId() {
+		return this.id;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="assessing-code-coverage-using-eclemma"><a class="anchor" href="#assessing-code-coverage-using-eclemma"></a>2.9. Assessing Code Coverage using EclEmma</h3>
@@ -2744,7 +2883,7 @@ We can straightforwardly manage code coverage using JaCoCo inside Eclipse with n
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-11-09 11:14:03 -0500
+Last updated 2022-11-09 11:36:51 -0500
 </div>
 </div>
 </body>
