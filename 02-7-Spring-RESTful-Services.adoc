@@ -390,11 +390,11 @@ We can see if our application is able to respond to HTTP requests using, e.g., t
 
 Once you launch the client, you can specify the path and select the method as shown in the below figures.
 
-image:figs/RestClient1.png[Post method on REST Client,width=1000]
+image::RestClient1.png[Post method on REST Client,width=1000]
 
 Once we use POST, the record is persisted and then we can use the GET method to retrive the same.
 
-image:figs/RestClient2.png[GET method on REST Client,width=1000]
+image::RestClient2.png[GET method on REST Client,width=1000]
 
 Similary, we can try other methods as well.
 
@@ -439,7 +439,7 @@ public interface PersonRepository extends CrudRepository<Person, String>{
 
 . Finally, we can access this REST API (`http://localhost:8080/person_data`) in the browser or REST Client and will receive the JSON as shown below. 
 +
-image:figs/RestClient3.png[Post method on REST Client,width=1000]
+image::RestClient3.png[Post method on REST Client,width=1000]
 
 . Exercise: turn on this _Spring Data JPA_ feature for events and registrations, too.
 
