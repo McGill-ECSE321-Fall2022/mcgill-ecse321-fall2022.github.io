@@ -114,6 +114,8 @@ public void setMockOutput() {
 }
 ----
 
+NOTE: `lenient()` tells Mockito not to warn us if we set up unnecessary mocks. You may prefer not to use `lenient()` to get those warnings. In that case, you will probably need to define the mock behaviour for each test separately. See https://github.com/McGill-ECSE321-Fall2022/EventRegistration-Monday/blob/main/EventRegistration-Backend/src/test/java/ca/mcgill/ecse321/eventregistration/service/PersonServiceTests.java for an example of unit tests without `lenient()`.
+
 . Add test cases from the link:https://gist.githubusercontent.com/imbur/d8836dc9f44ece65186a43ac80a259fd/raw/ff59449ad4dfadfc2c54bb317649300f6ae2409c/TestEventRegistrationService.java[complete test suite that is available from here].
 
 . Run the tests as JUnit/Gradle tests and interpret the test error messages! You should see only a few (at least one) tests passing.

@@ -2368,6 +2368,22 @@ public void setMockOutput() {
 </div>
 </div>
 </li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<code>lenient()</code> tells Mockito not to warn us if we set up unnecessary mocks. You may prefer not to use <code>lenient()</code> to get those warnings. In that case, you will probably need to define the mock behaviour for each test separately. See <a href="https://github.com/McGill-ECSE321-Fall2022/EventRegistration-Monday/blob/main/EventRegistration-Backend/src/test/java/ca/mcgill/ecse321/eventregistration/service/PersonServiceTests.java" class="bare">https://github.com/McGill-ECSE321-Fall2022/EventRegistration-Monday/blob/main/EventRegistration-Backend/src/test/java/ca/mcgill/ecse321/eventregistration/service/PersonServiceTests.java</a> for an example of unit tests without <code>lenient()</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
 <p>Add test cases from the <a href="https://gist.githubusercontent.com/imbur/d8836dc9f44ece65186a43ac80a259fd/raw/ff59449ad4dfadfc2c54bb317649300f6ae2409c/TestEventRegistrationService.java">complete test suite that is available from here</a>.</p>
 </li>
@@ -2883,7 +2899,7 @@ We can straightforwardly manage code coverage using JaCoCo inside Eclipse with n
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-11-09 11:36:51 -0500
+Last updated 2022-11-09 11:43:58 -0500
 </div>
 </div>
 </body>
