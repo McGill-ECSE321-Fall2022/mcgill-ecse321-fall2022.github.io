@@ -90,11 +90,11 @@ dynamically print their name by `{{ person.name }}` (see https://vuejs.org/v2/gu
   <div id="eventregistration">
     <h2>Persons</h2>
       <table>
-        <tr v-for="person in persons" :key=person.name>
+        <tr v-for="person in persons" :key="person.name">
             <td>{{ person.name }}</td>
             <td> 
               <ul>
-                <li v-for="event in person.events" :key=event.name>
+                <li v-for="event in person.events" :key="event.name">
                   {{event.name}}
                 </li>
               </ul>

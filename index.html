@@ -3421,11 +3421,11 @@ dynamically print their name by <code>{{ person.name }}</code> (see <a href="htt
   &lt;div id="eventregistration"&gt;
     &lt;h2&gt;Persons&lt;/h2&gt;
       &lt;table&gt;
-        &lt;tr v-for="person in persons" :key=person.name&gt;
+        &lt;tr v-for="person in persons" :key="person.name"&gt;
             &lt;td&gt;{{ person.name }}&lt;/td&gt;
             &lt;td&gt;
               &lt;ul&gt;
-                &lt;li v-for="event in person.events" :key=event.name&gt;
+                &lt;li v-for="event in person.events" :key="event.name"&gt;
                   {{event.name}}
                 &lt;/li&gt;
               &lt;/ul&gt;
@@ -3897,7 +3897,7 @@ the list of people.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-11-20 15:26:47 -0500
+Last updated 2022-11-20 15:36:03 -0500
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
