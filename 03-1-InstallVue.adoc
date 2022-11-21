@@ -21,6 +21,8 @@ $ npm -v
 
 . Install the command line interface (CLI) for Vue: `npm install -g @vue/cli`
 
+. Install the init add-on for vue-cli: `npm install -g @vue/cli-init`
+
 ////
 . Optionally, install Bootstrap 4: `sudo npm install bootstrap-vue bootstrap@4.0.0-beta.2` 
 ////
@@ -107,10 +109,10 @@ in similar environment variables (`backendHost` and `backendPort`).
 module.exports = {
   build: {
     env: require('./prod.env'),
-    host: 'eventregistration-frontend-123.herokuapp.com',
-    port: 443,
-    backendHost: 'eventregistration-backend-123.herokuapp.com',
-    backendPort: 443,
+    host: '127.0.0.1',
+    port: 8087,
+    backendHost: '127.0.0.1',
+    backendPort: 8080,
     //...
   },
   dev: {
