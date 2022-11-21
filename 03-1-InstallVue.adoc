@@ -19,7 +19,7 @@ $ npm -v
 6.14.4 (or higher)
 ----
 
-. Install the command line interface (CLI) for Vue: `npm install -g @vue-cli`
+. Install the command line interface (CLI) for Vue: `npm install -g @vue/cli`
 
 ////
 . Optionally, install Bootstrap 4: `sudo npm install bootstrap-vue bootstrap@4.0.0-beta.2` 
